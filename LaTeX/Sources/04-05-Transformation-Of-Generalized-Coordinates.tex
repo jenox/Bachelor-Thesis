@@ -1,0 +1,78 @@
+\section{Transformation of Generalized Coordinates}
+\label{sect:transformation-of-generalized-coordinates}
+
+Although generalized coordinates ${q_{_\Pi}}$ are helpful as an internal representation that implicitly satisfies the holonomic constraints, we will need to retrieve vertices' positions ${\vec{r}_v}$ and circular arcs ${\Gamma_P}$ to eventually produce a drawing of the graph ${G \coloneqq (V(\Pi), E(\Pi))}$.
+
+
+In theory, we can write both the position vectors ${\vec{r}_v}$ and circular arcs ${\Gamma_P}$ as an explicit function of the generalized coordinates. However, these expressions get out of hand very quickly when paths are nested within one another, \ie{} a path's internal vertex is an endpoint of another path. Instead, we propose the following algorithm to perform the transformation to position vectors sequentially:
+
+\bigskip
+
+\begin{algorithm}[H]
+  \caption{Transformation of generalized coordinates}
+  \label{algo:transformation-of-generalized-coordinate}
+  \SetKwData{Arc}{arc}
+  \SetKwData{CircularArc}{CircularArc}
+  \SetKwData{PointForProgress}{pointForProgress}
+  \SetArgSty{textrm}
+  \vspace{5pt}
+  \KwData{Greedily realizable sequence of simple paths ${\Pi}$ and corresponding generalized coordinates ${q_{_\Pi} = (x, y, \varphi, p)}$, \ie{}
+    \vspace{-8pt}
+    \begin{flalign*}
+      x \colon V_\text{u}(\Pi) &\to \mathbb{R},&\\
+      y \colon V_\text{u}(\Pi) &\to \mathbb{R},&\\
+      \varphi \colon \phantom{V_\text{u}(}\Pi\phantom{)} &\to (-180 \degrees, 180 \degrees),&\\
+      p \colon V_\text{c}(\Pi) &\to (0, 1)&
+    \end{flalign*}
+  }
+  \vspace{-4pt}
+  \KwResult{Positions ${\vec{r}(v)}$ and arcs ${\Gamma(P)}$ for all vertices and paths in ${\Pi}$}
+  \vspace{5pt}
+  Initialize ${\vec{r} \colon V(\Pi) \to \mathbb{R}^2}$\;
+  Initialize ${\Gamma \colon \Pi \to \CircularArc}$\;
+  \;
+  \ForEach{${v \in V_\text{u}(\Pi)}$}{
+    \label{line:transformation-unconstrained-start}
+    ${\vec{r}(v) \gets (x({v}), y({v}))}$\;
+    \label{line:transformation-unconstrained-end}
+  }
+  \;
+  \ForEach{${P = (v_1, \ldots, v_n) \in \Pi}$}{
+    \label{line:transformation-constrained-start}
+    \label{line:transformation-access-endpoints}
+    ${\Arc \gets \CircularArc(\vec{r}(v_1), \vec{r}(v_n), \varphi(P))}$\;
+    \;
+    \ForEach{${v \in (v_1, \ldots, v_{n-1})}$}{
+      ${\vec{r}(v) \gets \Arc.\PointForProgress(p(v))}$\;
+    }
+    \;
+    ${\Gamma(P) \gets \Arc}$\;
+    \label{line:transformation-constrained-end}
+  }
+  \;
+  \Return $(\vec{r}, \Gamma)$
+\end{algorithm}
+
+\clearpage
+
+
+
+\paragraph{Correctness}
+
+In \crefrange{line:transformation-unconstrained-start}{line:transformation-unconstrained-end}, we determine the position vectors for unconstrained vertices ${v \in V_\text{u}(\Pi)}$. For those and only those the generalized coordinates ${x(v)}$, ${y(v)}$ are defined, and it is trivial to assemble the vertices' position vectors.
+
+In \crefrange{line:transformation-constrained-start}{line:transformation-constrained-end}, the position vectors of constrained vertices ${v \in V_\text{c}(\Pi)}$ are determined. When constructing a circular arc ${\Gamma_P}$, we need to know its endpoints' positions. If an endpoint is unconstrained, then it had its position assigned already in \crefrange{line:transformation-unconstrained-start}{line:transformation-unconstrained-end}. If it is not, then it must be constrained, and by definition, it has appeared in an earlier path in whose iteration it had its position assigned. Therefore the endpoints' positions are well-defined at the time of access in \cref{line:transformation-access-endpoints}. Considering a path's internal vertices ${v}$ are constrained by \cref{eqn:blah-blah-property}, the ${p(v)}$ are well-defined, allowing us to compute the vertices' positions on ${\Gamma_P}$. \Cref{eqn:blah-blah-property} also guarantees that vertices do not appear as internal vertices to any more paths once laid out, and therefore have a position assigned only once.
+
+Considering the position vectors are computed for both constrained and unconstrained vertices, all vertices ${v \in V(\Pi)}$ have their position assigned.
+
+
+
+\paragraph{Runtime}
+
+The partition of ${V(\Pi)}$ into ${V_\text{u}(\Pi)}$ and ${V_\text{c}(\Pi)}$ is implicitly given by the domain of ${x}$, ${y}$, and ${p}$. Therefore \crefrange{line:transformation-unconstrained-start}{line:transformation-unconstrained-end} can be implemented in ${\bigTheta{\abs{V_\text{u}(\Pi)}}}$. In \crefrange{line:transformation-constrained-start}{line:transformation-constrained-end}, we construct a circular arc for each path ${P \in \Pi}$ and use it to compute the positions of ${P}$'s internal vertices in ${\bigTheta{1}}$ each. Considering each vertex ${v \in V_\text{c}(\Pi)}$ has its position assigned once and once only, \crefrange{line:transformation-constrained-start}{line:transformation-constrained-end} run in ${\bigTheta{\abs{\Pi} + \abs{V_\text{c}(\Pi)}}}$, yielding a total runtime of ${\bigTheta{\abs{\Pi} + \abs{V(\Pi)}}}$, which is optimal.
+
+
+
+\paragraph{Validity of Drawings}
+
+The drawing the algorithm produces is not necessarily a (valid) drawing of ${\Pi}$ with circular arcs. While the generalized coordinates implicitly satisfy the constraints of all vertices on a path ${P}$ lying on the same circular arc ${\Gamma_P}$, they do not make any guarantees about vertices not coinciding, edges not overlapping, or edges intersecting no vertices other than their endpoints. Recall that if the order of vertices on ${\Gamma_P}$ is not as indicated by ${P}$, then there inevitably are overlapping edges. These constraints will be dealt with in the following section.

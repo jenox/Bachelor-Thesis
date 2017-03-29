@@ -1,0 +1,10 @@
+\section{Related Work}
+\label{sect:related-work}
+
+In his research, Schulz dealt with the theoretical lower and upper bounds of the number of required entities and provided an algorithm satisfying said bounds only for very specific classes of graphs \cite{Schulz}. Similar research has been performed for drawing multiple incident edges using straight line segments \cite{Dujmovic, Durocher, Igamberdiev}.
+
+Force-directed algorithms have already been used for drawing graphs with additional features desired in equilibrium.
+
+Chernobelskiy \etal{} \cite{Chernobelskiy}, for example, studied so-called Lombardi drawings and used a force-directed approach to optimize angular resolution by introducing a new set of forces. Sugiyama and Misue \cite{Sugiyama} studied force-directed algorithms in which forces exerted by a magnetic field are used to align edges in a certain direction. In both cases, the additional desired feature is dispensable, and therefore only poses a soft constraint affecting the quality of a drawing. Although nice to have, valid drawings can be produced even if these constraints are violated.
+
+Bertault \cite{Bertault} designed a force-directed algorithm called PrEd that preserves edge crossing from an initial layout. The additional desired feature here is indispensable and poses a hard constraint that has to be satisfied for the resulting drawing to be acceptable. Even though arbitrary displacements of the graph's vertices might render some of its drawings invalid, the additional constraint does not affect the number of degrees of freedom in the system.

@@ -1,0 +1,23 @@
+\chapter{Future Work}
+\label{chap:future-work}
+
+The results presented in \cref{sect:evaluation} were somewhat dissatisfying for dense graphs. The constraints the drawings are subject to play a significant role in this. Recall that the decomposition of the input graph into a greedily realizable sequence of paths implicitly defines said constraints; and that how these constraints are accounted for is irrelevant for the quality of the drawings. Therefore the restrictive choice of precondition in \cref{eqn:blah-blah-property} leaves much room for improvement.
+
+We have also seen that, depending on how the input graph has been decomposed into paths, the resulting drawings greatly differ in appeal. Possible future research may include finding properties of decompositions that yield appealing drawings, and how such decompositions can be found efficiently. A reference drawing of the graph may allow for a smart choice of paths.
+
+It is left to find out if additional features desired in equilibrium, such as better angular resolution \cite{Chernobelskiy}, are compatible with drawing multiple incident edges on the same circular arc.
+
+Although constrained systems are very common in physics, how relevant they really are to graph drawing is yet to be determined.
+
+
+
+\hfill
+
+\noindent
+Optimization-wise, there is still a lot of room for improvement.
+
+The partial derivatives of the energy function with respect to the generalized coordinates may be able to be approximated, allowing for a more natural convergence as all dimensions can be adjusted at once. However, this would introduce other problems of traditional force-directed algorithms, such as possible oscillation around an equilibrium point, or (temporary) decreases in quality.
+
+In systems where the restoring forces are explicitly defined, it may be an option to use a hybrid approach, treating constrained and unconstrained vertices separately. Vertices that can move freely in both dimensions could be displaced using a traditional force-directed approach whereas vertices whose movement is constrained could still be managed by the likes of hill climbing. This approach would be especially beneficial for systems with many unconstrained vertices.
+
+Other optimization techniques, such as genetic optimization algorithms, should also be experimented with. The recombination of two individuals is non-trivial for graph drawings \cite{Branke} but would allow for local energy minima to be overcome.

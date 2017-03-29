@@ -1,0 +1,70 @@
+\makeatletter
+\begin{titlepage}
+
+\begin{tikzpicture}[overlay]
+  \newcommand{\diameter}{7}
+  \newcommand{\xone}{-15}
+  \newcommand{\xtwo}{160}
+  \newcommand{\yone}{15}
+  \newcommand{\ytwo}{-253}
+  \draw[color=gray]
+  (\xone mm, \yone mm)
+  -- (\xtwo mm, \yone mm)
+  arc (90:0:\diameter mm)
+  -- (\xtwo mm + \diameter mm , \ytwo mm)
+  -- (\xone mm + \diameter mm , \ytwo mm)
+  arc (270:180:\diameter mm)
+  -- (\xone mm, \yone mm);
+\end{tikzpicture}
+
+\begin{textblock}{10}[0,0](4,2.5)
+\includegraphics[width=.3\textwidth]{Resources/Logos/KIT.pdf}
+\end{textblock}
+
+\begin{textblock}{10}[0,0](14.5,2.45)
+\includegraphics[width=.15\textwidth]{Resources/Logos/Algo.pdf}
+\end{textblock}
+
+
+\changefont{phv}{m}{n}
+\vspace*{3.75cm}
+
+\begin{center}
+  \Huge{\@title}
+  \vspace*{2.25cm}\\
+  \Large{Bachelor Thesis of}\\
+  \vspace*{1cm}
+  \huge{\@author}\\
+  \vspace*{1cm}
+  \Large{At the Department of Informatics}\\
+  \Large{Institute of Theoretical Computer Science}\\
+\end{center}
+
+\vspace*{1cm}
+
+\begin{center}
+\begin{Large}
+\begin{tabular}[ht]{l c l}
+  Reviewers: & \hfill & Prof.~Dr.~Dorothea Wagner\\
+  & \hfill & Prof.~Dr.~Henning Meyerhenke\\
+  Advisor: & \hfill & Dr.~Tamara Mchedlidze
+\end{tabular}
+\end{Large}
+\end{center}
+
+\vspace{2cm}
+
+\begin{center}
+\large{Time Period:~~\@date}
+\end{center}
+
+\begin{textblock}{10}[0,0](4,16.8)
+\tiny{KIT -- University of the State of Baden-Wuerttemberg and National Laboratory of the Helmholtz Association}
+\end{textblock}
+
+\begin{textblock}{10}[0,0](14,16.75)
+\large{\textbf{www.kit.edu}}
+\end{textblock}
+
+\end{titlepage}
+\makeatother

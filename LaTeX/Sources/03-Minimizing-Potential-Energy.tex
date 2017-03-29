@@ -1,0 +1,32 @@
+\chapter{Minimizing Potential Energy}
+\label{chap:minimizing-potential-energy}
+
+Potential energy is the capacity for doing work which results only from a system's configuration, \ie{} its particles' positions. Recall that we can express all particle positions ${\vec{r}_i}$ as a function of the generalized coordinates; hence the potential energy ${U}$, too, is a function of the generalized coordinates. In the following, we shall assume the potential energy function to be continuous and locally differentiable.
+
+In conservative systems, mechanical energy is conserved, which is equivalent to the work done by a force being independent of its trajectory. Therefore we can write the forces in terms of the potential energy as
+%
+\begin{equation}
+  \vec{F}_i \coloneqq -\frac{\partial U}{\partial \vec{r}_i}.
+  \label{eqn:force-as-differential}
+\end{equation}
+%
+The forces ${\vec{F}_i}$ are defined such that the potential energy ${U}$ is equal to the work one must do \emph{against} the forces to transfer an arbitrary constant reference configuration into the current configuration; hence the negative sign. As a result, the forces are always directed towards a lower energy level and therefore act to reduce the system's potential energy \cite{Nave}.
+
+\hfill
+
+\noindent
+A particle is said to be in \emph{mechanical equilibrium} if there is no net force on said particle. Similarly, a particle system is in mechanical equilibrium if the net force on all its particles is zero \cite{Orear}. Using \cref{eqn:force-as-differential}, we find that a system is in equilibrium if and only if the gradient ${\nabla U}$ is zero for its current configuration. For (local) minima of the potential energy, the system is said to be in \emph{stable equilibria}.
+
+Recall that the forces ${\vec{F}_i}$ are defined to act to reduce the system's potential energy. If a system has been displaced from an equilibrium configuration, said forces consequently act to return the system to equilibrium and are therefore called \emph{restoring forces}.
+
+Oftentimes a system has multiple stable equilibria in which algorithms looking to minimize the system's potential energy can get stuck. It is a challenging problem to find a configuration in which the system's energy reaches a global minimum.
+
+
+
+
+
+\clearpage
+\input{Sources/03-01-Force-Directed-Algorithms}
+
+\clearpage
+\input{Sources/03-02-Explicit-Energy-Function}

@@ -1,0 +1,50 @@
+\section{Force-Directed Algorithms}
+\label{sect:force-directed-algorithms}
+
+As the name suggests, force-directed algorithms define forces between pairs of particles, based on their relative positions, and use these forces to iteratively move the particles, attempting to minimize the system's implicitly defined potential energy \cite{Kobourov}. These forces are defined such that they are restoring forces, \ie{} they point towards equilibrium.
+
+Using the formula for physical work, we can define the potential energy of a configuration as the work one must do against the restoring forces to transfer an arbitrary constant reference configuration into the current configuration.
+%
+\begin{equation}
+  U \coloneqq \int -\vec{F}_\text{res}(\vec{r}) \differential{\vec{r}}
+  \label{eqn:energy-as-integral}
+\end{equation}
+%
+For a spring, one could choose the reference configuration such that the spring is relaxed; for two charged particles, one might choose a reference configuration in which they are infinitely far apart. Note that since we are dealing with conservative systems, the concrete trajectory between the endpoints does not matter.
+
+Applying \cref{eqn:energy-as-integral} to each force allows us to calculate the system's total potential energy without ever explicitly defining it. \Cref{eqn:energy-as-integral} also shows that giving in to a restoring force, \ie{} moving a particle by an infinitesimal distance in the direction of the restoring force, decreases the implicitly defined potential energy. Note that there potentially are multiple forces acting on the same particle; therefore one must first calculate the net force acting on each particle as the (vector) sum of the individual restoring forces, and thereby find the direction in which the particles need to be moved in order to reduce the system's potential energy.
+
+When displacing each particle by an infinitesimal distance in the direction of the net force acting on it, it is evident that local energy minima can not be overcome. Depending on the initial configuration, it may not be possible to reach a global energy minimum. Although infinitesimal displacements are not possible in practice, force-directed algorithms with larger displacements generally yield good results \cite{Kobourov}.
+
+
+
+
+
+\subsection{Generalized Forces}
+
+Forces do not act on (generalized) coordinates; they act on the particles whose positions are determined by the generalized coordinates. Depending on the constraints the system is subject to, a movement in the direction of the restoring forces may or may not be possible. If it is, one must find the adjustment that needs to be made to the generalized coordinates that results in the desired change in particle positions. Considering the positions ${\vec{r}_i}$ are functions of the generalized coordinates ${q \coloneqq (q_1, \ldots, q_m)}$, we can use the restoring forces to find the so-called \emph{generalized forces} acting on the generalized coordinates \cite{Fitzpatrick}:
+%
+\begin{align}
+  Q_j \;\coloneqq &\;\; \sum_{i=1}^{n}{\vec{F}_i \cdot \frac{\partial \vec{r}_i}{\partial q_j}}, \qquad j = 1, \ldots, m
+  \label{eqn:generalized-forces-definition} \\
+  \;\stackrel{\mathclap{\eqref{eqn:force-as-differential}}}{=} &\;\; \frac{\partial U}{\partial q_j}
+  \label{eqn:generalized-forces-as-gradient}
+\end{align}
+%
+Note that the products ${Q_j \cdot q_j}$ always have the dimension of work. Hence the generalized forces do not necessarily have the dimension of force and instead depend on the dimensions of their corresponding generalized coordinates.
+
+
+
+\paragraph{Feasibility}
+
+Both generalized coordinates and generalized forces are scalar quantities. The sign of a generalized force ${Q_j}$ still indicates in which direction its corresponding generalized coordinate ${q_j}$ needs to be adjusted for it to result in the desired change in particle positions, which in turn reduces the system's potential energy. Whether or not it is feasible to use the signs of the generalized forces as a hint to the direction in which to adjust the generalized coordinates very much depends on the complexity of the ${\vec{r}_i(q_1, \ldots, q_m)}$ and their partial derivatives with respect to the generalized coordinates ${q_j}$.
+
+Note that if the system is not subject to any constraints and one uses Cartesian coordinates as the generalized coordinates, the generalized forces essentially become a resolution of the restoring forces into their x and y components, yielding the traditional force-directed algorithms for systems without constraints.
+
+
+
+\paragraph{Forces in Equilibrium}
+
+In constrained systems, the constraints implicitly define so-called \emph{constraining forces} which act perpendicularly to the allowed movement to keep all constraints satisfied \cite{Fliessbach}. These forces need to be taken into account for the net force on all particles to be zero in equilibrium configurations.
+
+Back in the example of a mechanical pendulum, the only exterior force is the gravitational force; and it acts on the pendulum regardless of its position. The net force on the weight only becomes zero in equilibrium when taking the implicit constraining force of the rigid rod into account.

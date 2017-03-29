@@ -1,0 +1,144 @@
+\section{Forces and Potential Energy}
+\label{sect:forces-and-potential-energy}
+
+Let ${G = (V, E)}$ be a connected and simple input graph. We have seen that one can efficiently decompose ${G}$ into a greedily realizable sequence of simple paths ${\Pi = (P_1, \ldots, P_k)}$ and choose generalized coordinates that implicitly satisfy the holonomic constraints defined by ${\Pi}$.
+
+For a configuration ${q_{_\Pi}}$ to yield a valid drawing of the graph, it is left to ensure that no vertices coincide, that no edges overlap, and that no edge intersects any vertices other than its endpoints. By assigning each configuration a potential energy that is finite if and only if said constraints are satisfied, we can easily distinguish valid from invalid drawings. This potential energy also serves as a measurement of the resulting drawing's quality and can be optimized to get better-looking drawings of ${G}$.
+
+When drawing a graph, we want the vertices to be well spaced out with adjacent vertices being close together. Defining both attractive and repulsive forces between each pair of vertices is a standard procedure in many force-directed algorithms \cite{Kobourov} and can be applied here as well. In a mechanical system, the forces would act on the vertices and move them around to decrease the implicitly defined potential energy of the system.
+
+In the following, ${c_i \in (0, \infty)}$ are constants used to scale various physical quantities.
+
+
+
+
+
+\paragraph{Vertex-Vertex Repulsion}
+
+Thinking of the vertices as charged particles pushing each other away allows us to space them out. A repulsive force ${F_\text{rep}}$ based on Coulomb's law attempts to push two vertices away from each other. It is exerted along the line connecting the vertices, and its magnitude depends on their distance ${d}$:
+%
+\begin{equation*}
+  F_\text{rep}(d) \coloneqq c_1 \cdot \frac{1}{d^2}
+\end{equation*}
+%
+We can write the electric potential energy stored in such a pair of charged particles as
+%
+\begin{align*}
+  U_\text{rep}(u, v) \coloneqq{}& \int\limits_{\infty}^{\mathclap{d(u, v)}} -F_\text{rep}(s) \differential{s}
+  \\
+  ={}& c_1 \cdot \frac{1}{d(u, v)},
+\end{align*}
+%
+where ${d(u, v)}$ is the Euclidean distance of the vertices ${u}$ and ${v}$'s positions. For ${d(u, v) = 0}$ the constraint of vertices not coinciding is violated, and we shall define ${U_\text{rep}(u, v) \coloneqq \infty}$.
+
+
+
+
+
+\paragraph{Vertex-Vertex Attraction}
+
+In order to keep adjacent vertices close together, we think of every edge as a virtual spring attempting to restore its relaxed length ${k}$. Linear springs based on Hooke's law have shown to be too strong when adjacent vertices are far away from each other. Therefore we shall use springs whose restoring forces ${F_\text{att}}$ are instead logarithmic in their relative displacement:
+%
+\begin{equation*}
+  F_\text{att}(l) \coloneqq -c_2 \cdot k \cdot \eval{\ln}{\frac{l}{k}}
+\end{equation*}
+%
+The elastic potential energy stored in such a spring can be written as
+%
+\begin{align*}
+  U_\text{att}(e) \coloneqq{}& \int\limits_{k}^{\mathclap{l(\Gamma_e)}} -F_\text{att}(s) \differential{s}
+  \\
+  ={}& c_2 \cdot kl \cdot \left( \eval{\ln}{\frac{l}{k}} - 1 \right) + k^2,
+\end{align*}
+%
+where ${\Gamma_e}$ is the circular arc used to draw the edge ${e}$, and ${l(\Gamma_e)}$ is its arc length.
+
+
+
+
+
+\paragraph{Overlapping Edges}
+
+Edges can overlap either within a single path or between two distinct paths. For each path ${P \in \Pi}$ we can define a potential energy that is zero if no edges ${e \in E(P)}$ overlap each other, and infinite otherwise:
+%
+\begin{equation*}
+  U_\text{ord}(P) \coloneqq \begin{cases}
+    0 & \text{if edges ${e \in E(P)}$ do not overlap}
+    \\
+    \infty & \text{otherwise}
+  \end{cases}
+\end{equation*}
+%
+If edges within a path overlap, its internal vertices are not ordered correctly on the circular arc ${\Gamma_P}$. In the process of transferring vertices from being ordered correctly to being ordered incorrectly, two vertices ${u \neq v}$ must coincide, \ie{} ${d(u,v) = 0}$, for which ${U_\text{rep}(u,v) = \infty}$. Therefore ${U_\text{ord}}$ does not affect the continuity or local differentiability of the total energy function. Overlapping edges of different paths will be dealt with in the next paragraph.
+
+
+
+
+
+\paragraph{Vertex-Path Repulsion}
+
+Edges of different paths ${P_i \neq P_j}$ can only overlap if the two circular arcs ${\Gamma_{P_i}}$, ${\Gamma_{P_j}}$ overlap. This case only occurs if at least one of the paths' endpoints lies on the other arc. Since the input graph ${G}$ is simple, this is equivalent to a circular arc intersecting vertices its respective path does not contain.
+
+Therefore it is sufficient to ensure that vertices ${v}$ only lie on those circular arcs ${\Gamma_P}$ where they are part of the respective path, \ie{} ${v \in V(P)}$. For each path ${P \in \Pi}$ and vertex ${v \notin V(P)}$, we can define another potential energy that is finite if and only if ${v}$ does not lie on ${\Gamma_P}$ as
+%
+\begin{equation*}
+  U_\text{int}(v, P) \coloneqq \begin{cases}
+    c_3 \cdot \frac{1}{d(v, \Gamma_P)} & \text{if}~d(v, \Gamma_P) \neq 0
+    \\
+    \infty & \text{otherwise.}
+  \end{cases}
+\end{equation*}
+%
+Here ${d(v, \Gamma_P)}$ is the minimum Euclidean distance from the vertex ${v}$'s position to any point on the circular arc ${\Gamma_P}$. Note that by defining the potential energy, the corresponding restoring force is implicitly defined as well.
+
+
+
+
+
+\paragraph{Total Potential Energy}
+
+Using the four components described above, we can now calculate the total potential energy of the system determined by a configuration ${q_{_\Pi}}$:
+%
+\begin{equation*}
+  U(q_{_\Pi}) \coloneqq
+  \sum_{\mathclap{\substack{\lbrace u, v \rbrace \in V^2}}} U_\text{rep}(u, v)
+  +
+  \sum_{\mathclap{\substack{e \in E}}} U_\text{att}(e)
+  +
+  \sum_{\mathclap{\substack{P \in \Pi}}} U_\text{ord}(P)
+  +
+  \sum_{\mathclap{\substack{v \in V, P \in \Pi \\ v \notin V(P)}}} U_\text{int}(v, P)
+\end{equation*}
+
+\noindent
+The summands \emdash and therefore their sum, too \emdash are finite if and only if all the constraints defined by ${\Pi}$ are satisfied. Thus we can easily tell whether or not a configuration yields a (valid) drawing of ${\Pi}$ with circular arcs by calculating the system's total potential energy. The energy function can be evaluated in ${\bigOh{\abs{V}^2 + \abs{E} + \abs{V} \cdot \abs{\Pi}}}$ time.
+
+
+
+
+
+\hfill
+
+\hiddensubsection{Minimizing Potential Energy}
+
+Considering an explicit function for the ${\vec{r}_v}$ is not feasible as illustrated in \cref{sect:transformation-of-generalized-coordinates}, closed-form expressions for the forces or the system's total potential energy are not feasible either. It is therefore not an option to use generalized forces to minimize the system's potential energy; let alone to perform an analytical optimization. Instead, we shall resort to a generic hill climbing algorithm to find a local energy minimum.
+
+Since hill climbing generally works on real-valued functions of ${n}$ variables, we need the total energy function to be of the form ${U \colon \mathbb{R}^n \to \mathbb{R} \cup \lbrace\infty\rbrace}$. The following bijective transformations allow all generalized coordinates to be used as real numbers and vice versa:
+%
+\begin{align*}
+  (-180 \degrees, 180 \degrees) \ni \varphi & \mapsto c_4 \cdot \eval{\tan}{\frac{\varphi}{2}} \in \mathbb{R}
+  \\
+  (0, 1) \ni p & \mapsto c_5 \cdot \eval{\tan}{\pi \cdot (p - 0.5)} \in \mathbb{R}
+\end{align*}
+
+
+\noindent
+We can then collect all ${n}$ generalized coordinates in a real-valued vector ${q \in \mathbb{R}^n}$ determining the system's configuration and evaluate its potential energy in ${\bigOh{\abs{V}^2 + \abs{E} + \abs{V} \cdot \abs{\Pi}}}$ time.
+
+\hfill
+
+
+\noindent
+For hill climbing to converge to a (local) energy minimum, it has to be able to reach a configuration with finite energy by adjusting only a single dimension from its start configuration. Better yet, it should start from a configuration with finite energy, \ie{} a configuration that fulfills all constraints and therefore yields a (valid) drawing of ${\Pi}$ with circular arcs. \autoref{thm:existence-of-drawing} shows that such a configuration exists and its proof suggests a simple algorithm for finding one in ${\bigOh{\abs{V}^2 \cdot \abs{\Pi}}}$ time.
+
+Considering the potential energy assigned here is always positive, there exists an infimum of the energy function and hill climbing is set to converge.

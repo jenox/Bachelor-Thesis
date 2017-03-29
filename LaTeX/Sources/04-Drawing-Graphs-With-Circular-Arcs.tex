@@ -1,0 +1,50 @@
+\chapter{Drawing Graphs with Circular Arcs}
+\label{chap:drawing-graphs-with-circular-arcs}
+
+In the style of Schulz \cite{Schulz}, we shall now apply the concepts from \crefrange{chap:generalized-coordinates}{chap:minimizing-potential-energy} to create drawings of graphs with low visual complexity by drawing multiple incident edges using a single circular arc. The algorithms presented in this chapter allow us to create drawings of arbitrary connected and simple graphs. Potential edge crossings will be disregarded as they are unavoidable in nonplanar graphs and minimizing the number of edge crossings is generally ${\mathcal{NP}}$-hard.
+
+\hfill
+
+\noindent
+Let ${\Pi = \left\lbrace P_1, \ldots, P_k \right\rbrace}$ be a set of edge-disjoint paths that may have vertices in common. We shall denote the entirety of vertices and edges of paths ${P \in \Pi}$ by ${V(\Pi)}$ and ${E(\Pi)}$, respectively:
+%
+\begin{align*}
+  V(\Pi) &\coloneqq V(P_1) \cup \ldots \cup V(P_k)
+  \\
+  E(\Pi) &\coloneqq E(P_1) \cupplus \ldots \cupplus E(P_k)
+\end{align*}
+
+
+
+
+
+
+\noindent
+Given a graph ${G = (V, E)}$, a \emph{drawing of ${G}$ with circular arcs} is a drawing of ${G}$ in which every edge ${e \in E}$ is drawn as a circular arc ${\Gamma_e}$, such that \begin{enumerate*}[label=(\roman*)] \item no vertices coincide, \item no edges overlap, and \item no edge intersects vertices other than its endpoints \end{enumerate*}. For the purpose of working with circular arcs only, we shall consider straight line segments to be circular arcs with infinite radius and complete circles to be circular arcs, too.
+
+Similarly, given a set of edge-disjoint paths ${\Pi = \left\lbrace P_1, \ldots, P_k \right\rbrace}$, a \emph{drawing of ${\Pi}$ with circular arcs} is a drawing of the graph ${G \coloneqq (V(\Pi), E(\Pi))}$ with circular arcs, such that the edges of each path ${P \in \Pi}$ form a single circular arc ${\Gamma_P}$. Note that this does not violate above condition of every edge being drawn as a circular arc, since subdividing a circular arc yields other, though smaller, circular arcs. The fact that edges may not overlap implies that the order of vertices on ${\Gamma_P}$ must be as indicated by ${P}$.
+
+The definition of a drawing of ${\Pi}$ with circular arcs \emdash and therefore ${\Pi}$ itself \emdash implicitly defines the constraints a drawing of ${\Pi}$ is subject to. Note that only the constraints of all vertices ${v \in V(P)}$ on a path ${P \in \Pi}$ lying on the same circular arc ${\Gamma_P}$ can be expressed as holonomic constraints. The constraints of said vertices having the correct order on ${\Gamma_P}$, no vertices coinciding, no edges overlapping, and no edge intersecting vertices other than its endpoints can not be expressed as holonomic constraints. These constraints do not reduce the number of degrees of freedom in the drawing \emdash they simply render some drawings invalid, but need to be accounted for nonetheless.
+
+
+
+\clearpage
+\input{Sources/04-01-Existence-Of-Drawings-With-Circular-Arcs}
+
+\clearpage
+\input{Sources/04-02-Graph-Decomposition}
+
+\clearpage
+\input{Sources/04-03-Circular-Arc-Geometry}
+
+\clearpage
+\input{Sources/04-04-Generalized-Coordinates}
+
+\clearpage
+\input{Sources/04-05-Transformation-Of-Generalized-Coordinates}
+
+\clearpage
+\input{Sources/04-06-Forces-And-Potential-Energy}
+
+\clearpage
+\input{Sources/04-07-Evaluation}

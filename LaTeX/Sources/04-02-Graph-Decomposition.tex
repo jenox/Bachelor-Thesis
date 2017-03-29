@@ -1,0 +1,97 @@
+\section{Graph Decomposition}
+\label{sect:graph-decomposition}
+
+In this section, we shall discuss a generic approach to decompose a connected and simple graph into a non-trivial greedily realizable sequence of simple paths. We restrain ourselves to connected graphs since paths can not contain isolated vertices. Besides, in a larger graph, the connected components can \emdash and should \emdash be drawn individually. The graph being simple allows it to be decomposed into simple paths, which will be a requirement in a later section.
+
+\Cref{algo:greedy-graph-decomposition} greedily assembles the paths one after the other.
+The \code{vertices} and \code{edges} sets keep track of which vertices and edges have already been used and allow us to ensure that the assembled paths both are edge-disjoint and fulfill \cref{eqn:blah-blah-property}.
+
+\hfill
+
+\begin{algorithm}[H]
+  \caption{Graph Decomposition}
+  \label{algo:greedy-graph-decomposition}
+  \SetKw{Break}{break}
+  \SetKw{Continue}{continue}
+  \SetKw{Ensure}{ensure}
+  \SetKwData{Paths}{paths}
+  \SetKwData{Vertices}{vertices}
+  \SetKwData{Edges}{edges}
+  \SetKwData{Path}{path}
+  \SetKwData{Head}{head}
+  \SetKwFunction{Append}{append}
+  \SetArgSty{textrm}
+  \vspace{5pt}
+  \KwData{Connected and simple graph ${G}$}
+  \KwResult{Greedily realizable sequence of simple paths ${\Pi}$, such that ${V(\Pi) = V(G)}$ and ${E(\Pi) = E(G)}$}
+  \vspace{10pt}
+  ${\Paths \gets ()}$\;
+  ${\Edges \gets \varnothing}$\;
+  ${\Vertices \gets \varnothing}$\;
+  \;
+  \ForEach{${u \in V(G)}$}{
+    \label{line:decomposition-choose-vertex}
+    \ForEach{${e = \lbrace u, v \rbrace \in E(G)}$}{
+      \label{line:decomposition-choose-first-edge}
+      \Ensure{${e \notin \Edges}$} \lElse{\Continue}
+      \;
+      ${\Path \gets (e)}$\;
+      ${\Head \gets v}$\;
+      ${\Edges \gets \Edges \cupplus \lbrace e \rbrace}$\;
+      ${\Vertices \gets \Vertices \cup \lbrace u \rbrace}$\;
+      \;
+      append:\;
+      \label{line:decomposition-append-loop}
+      \While{${\Head \notin \Vertices}$}{
+        ${\Vertices \gets \Vertices \cupplus \lbrace \Head \rbrace}$\;
+        \label{line:decomposition-append-loop-once-per-vertex}
+        \;
+        \ForEach{${f = \lbrace \Head, w \rbrace} \in E(G)$}{
+          \label{line:decomposition-choose-next-edge}
+          \Ensure{${f \notin \Edges}$} \lElse{\Continue}
+          \Ensure{${w \notin \Path.\Vertices}$} \lElse{\Continue}
+          \label{line:decomposition-ensure-simple-paths}
+          \;
+          ${\Path \gets \Path.\Append{f}}$\;
+          ${\Head \gets w}$\;
+          ${\Edges \gets \Edges \cupplus \lbrace f \rbrace}$\;
+          \;
+          \Continue append \;
+        }
+        \Break\;
+      }
+      ${\Paths \gets \Paths.\Append{\Path}}$\;
+    }
+  }
+  \;
+  \Return ${\Paths}$
+\end{algorithm}
+\vspace*{\fill}
+
+
+
+\paragraph{Correctness}
+
+After the loop in \cref{line:decomposition-choose-first-edge}, all edges incident to ${u}$ are guaranteed to appear in a path. Because this loop is executed for every vertex in the input graph ${G}$, all edges in the graph end up being used. By definition the input graph is connected; hence every vertex is incident to at least one edge, meaning that all vertices in the graph are used as well. Considering that edges are only ever used to assemble the working path if they have not been used before, we find that ${\Pi}$ is a decomposition of the input graph, \ie{} ${V(\Pi) = V(G)}$ and ${E(\Pi) = E(G)}$.
+
+It remains to show that ${\Pi}$ is a greedily realizable sequence of simple paths. Since the input graph does not contain loops, a single edge always is a simple path. Single-edged paths cannot possibly violate the requirements of a greedily realizable sequence of paths, as they do not have any internal vertices that could have appeared in an earlier path. When appending an edge to the working path, its current head would become an internal vertex. This operation is only performed if the current head can become an internal vertex without violating the requirements in \cref{eqn:blah-blah-property}, \ie{} if the current head has not been used beforehand. The additional check in \cref{line:decomposition-ensure-simple-paths} ensures that edges are only appended to the working path if the resulting path would still be simple, \ie{} if appending the edge would not form a cycle. Therefore ${\Pi}$ is indeed a greedily realizable sequence of simple paths.
+
+
+
+\paragraph{Runtime}
+
+The two outermost loops iterate over all vertices and their incident edges. Considering an edge is incident only to its endpoints, each edge is processed exactly twice here. When implemented using an adjacency list, these loop conditions can be checked in ${\bigTheta{\abs{V} + \abs{E}}}$.
+
+The condition of the \code{append} loop in \cref{line:decomposition-append-loop} is checked ${\bigTheta{\abs{V} + \abs{E}}}$ times as a result of the containing loop being executed that many times; plus once whenever the algorithm jumps back to the \code{append} label after appending an edge to the working path, which happens ${\bigOh{\abs{E}}}$ times. \Cref{line:decomposition-append-loop-once-per-vertex} ensures that the loop's body, however, is executed at most once per vertex. Using the same argument as above, iterating over the incident edges of ${\bigOh{\abs{V}}}$ vertices can be done in ${\bigOh{\abs{V} + \abs{E}}}$.
+
+As a result, the entire algorithm can be executed in ${\bigTheta{\abs{V} + \abs{E}}}$ when implemented using an adjacency list.
+
+
+
+\paragraph{Adaptation}
+
+The sole purpose of above algorithm is to show that it is relatively easy to decompose an input graph ${G}$ into a non-trivial greedily realizable sequence of paths ${\Pi}$ using a greedy algorithm. It does not intend to find a \emph{good} decomposition \emdash quality is a subjective measurement and very much depends on what one wants to achieve when drawing the graph.
+
+Possible tweaks include the choice of vertices in \cref{line:decomposition-choose-vertex} or the choice of edges in \cref{line:decomposition-choose-first-edge} and \cref{line:decomposition-choose-next-edge}. It may even be an option to not greedily append edges as long as possible, and instead start a new path earlier, especially in undirected graphs. In a directed graph, for example, it would make sense to keep track of the number of unused incoming edges for each vertex and pick a vertex with no unused incoming edges in \cref{line:decomposition-choose-vertex}.
+
+It may also be useful to let the user, who possibly has background knowledge about what the graph represents, provide some paths that semantically make sense to emphasize by drawing them as a single circular arc. The user-provided paths can then be completed to a valid decomposition ${\Pi}$ of the input graph.

@@ -1,0 +1,96 @@
+\section{Explicit Energy Function}
+\label{sect:explicit-energy-function}
+
+Sometimes the restoring forces result in equilibria that do not quite exhibit the desired features, or it is not clear how to choose the restoring forces at all. By instead explicitly assigning each configuration a potential energy, one can easily specify which features are desirable in equilibrium, and which are not. One does not need to provide the restoring forces, \ie{} a direction towards equilibrium \emdash a generic optimization algorithm will figure that out.
+
+Let us assume that all generalized coordinates ${q_j}$ can be (reversibly) transformed to be real-valued. Then we can collect all generalized coordinates in a real-valued vector and write the potential energy function as
+%
+\begin{equation*}
+  U' \colon \mathbb{R}^m \to \mathbb{R} \cup \lbrace \infty \rbrace.
+\end{equation*}
+%
+For invalid configurations, \eg{} if two charged particles coincide, we shall use an infinite potential energy instead of leaving the function undefined. The potential energy function ${U'}$ can then be minimized without any background knowledge of the problem, such as the restoring forces in the system.
+
+
+
+
+
+\subsection{Derivative-based Optimization}
+
+Many optimization methods require information about partial derivatives of the function to be optimized. These include finding an extremum analytically, but also many numerical optimization techniques such as Newton's method, coordinate descent methods, and conjugate gradient methods. For small systems these methods may be an option; but for larger systems, it is generally infeasible to obtain accurate derivative information.
+
+
+
+
+
+\subsection{Derivative-free Optimization}
+
+Due to the lack of accurate derivative information, methods that only evaluate function values are often better-suited to minimize the potential energy in larger systems. We shall discuss a simple algorithm in this category in greater detail.
+
+
+
+\subsubsection*{Hill Climbing}
+
+Hill climbing is a numeric optimization algorithm that iteratively improves the quality of its solution by adjusting one dimension at a time. In each iteration, the algorithm attempts to adjust a single dimension of its current state and accepts that change if and only if it results in an improvement in value space. This process is repeated until the maximum number of iterations has been performed, or until no further improvements can be found \cite{Russell}. There are three major drawbacks of hill climbing:
+%
+\begin{enumerate}
+  \itemsep 0em
+  \item \text{Local Optima:} The algorithm cannot escape a local optimum since adjustments are only accepted if they improve the function evaluation, and may therefore not reach a global optimum.
+  \item \text{Ridges and Alleys:} Considering the algorithm adjusts one dimension at a time, the search tends to zig-zag in non-axis-aligned ridges or alleys, taking an unreasonable amount of time to ascend the ridge or descend the alley.
+  \item \text{Plateaux:} A plateau is an area in which the value function is essentially flat. Depending on the concrete implementation, the algorithm will either not make any improvements at all, or conduct a random walk.
+\end{enumerate}
+%
+Popular variants of hill climbing include evaluating multiple neighboring states and continuing with the best, and adaptive step sizes for each dimension that change throughout the algorithm. \Cref{algo:adaptive-hill-climbing} shows a possible implementation of adaptive hill climbing.
+
+\hfill
+
+\begin{algorithm}[H]
+  \caption{Adaptive Hill Climbing for Minimization}
+  \label{algo:adaptive-hill-climbing}
+  \SetKwData{Acceleration}{acceleration}
+  \SetKwData{Steps}{steps}
+  \SetKwData{Factor}{factor}
+  \SetArgSty{textrm}
+  \vspace{5pt}
+  \KwData{number of iterations ${n}$, \newline value function ${f \colon \mathbb{R}^m \to \mathbb{R}}$, \newline start configuration ${\vec{x}_0 \in \mathbb{R}^m}$}
+  \KwResult{$\vec{x}_n$ with $f(\vec{x}_n) \leq f(\vec{x}_0)$}
+  \vspace{10pt}
+  ${\Acceleration \gets 1.25}$\;
+  ${\Steps \gets (1, \ldots, 1)}$\;
+  \;
+  \For{${i \in 1 \ldots n}$}{
+    ${\vec{x}_i \gets \vec{x}_{i-1}}$\;
+    \;
+    \For{${j \in 1 \ldots m}$}{
+      ${\vec{x}_{i,j} \gets \vec{x}_{i-1}}$\;
+      ${\Factor \gets \Acceleration^{-1}}$\;
+      \;
+      \For{${k \in -1 \ldots 1}$}{
+        ${\vec{x}_{i,+j,k} \gets \vec{x}_{i-1} + e_j \cdot \Steps_j \cdot \Acceleration^k}$\;
+        ${\vec{x}_{i,-j,k} \gets \vec{x}_{i-1} - e_j \cdot \Steps_j \cdot \Acceleration^k}$\;
+        \;
+        \If{${f(\vec{x}_{i,k,+j}) < f(\vec{x}_{i,j})}$} {
+          ${\vec{x}_{i,j} \gets \vec{x}_{i,k,+j}}$\;
+          ${\Factor \gets \Acceleration^k}$\;
+        }
+        \;
+        \If{${f(\vec{x}_{i,k,-j}) < f(\vec{x}_{i,j})}$} {
+          ${\vec{x}_{i,j} \gets \vec{x}_{i,k,-j}}$\;
+          ${\Factor \gets \Acceleration^k}$\;
+        }
+      }
+      \;
+      ${\Steps_j \gets \Factor \cdot \Steps_j}$\;
+      \;
+      \If{${f(\vec{x}_{i,j}) < f(\vec{x}_i)}$} {
+        ${\vec{x}_i \gets \vec{x}_{i,j}}$\;
+      }
+    }
+  }
+  \;
+  \Return ${\vec{x}_n}$
+\end{algorithm}
+
+\hfill
+
+Considering hill climbing adjusts one dimension at a time, for it to converge to a (local) minimum, it should be started from a valid configuration, \ie{} from one with finite potential energy. Unlike most randomized optimization algorithms, hill climbing has decent intermediate states, allowing for proper visualization of the optimization process.

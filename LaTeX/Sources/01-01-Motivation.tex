@@ -1,0 +1,8 @@
+\section{Motivation}
+\label{sect:motivation}
+
+In traditional force-directed algorithms, the only features desired in equilibrium are that adjacent vertices are close together and that non-adjacent vertices are further apart from each other. Depending on what one wants to achieve when drawing a graph, one may have additional features \emdash or different features altogether \emdash that make a good drawing. The challenge then is to find appropriate restoring forces that act to put the system into a state of equilibrium that exhibits said features. Some features in graph drawings may be so indispensable that they pose hard constraints that have to be satisfied for the drawing to be acceptable. These constraints effectively restrict the vertices' movement, making traditional force-directed algorithms (in which vertices can move freely in both dimensions) inapplicable for finding a local energy minimum.
+
+Schulz \cite{Schulz} proposed that graph drawings with low visual complexity, \ie{} drawings with few geometric entities, are easy to perceive by the viewer. Instead of drawing vertices and edges as their own geometric entity, Schulz aimed to draw multiple incident edges using a single geometric entity; namely, a circular arc. Considering there may not exist a circular arc through four or more arbitrarily placed vertices, this form of hard constraint reduces the number of degrees of freedom in the system.
+
+This thesis serves to discuss an approach to minimizing the potential energy in systems whose constraints reduce its number of degrees of freedom. We will also demonstrate how this approach can be applied to creating drawings of graphs in which circular arcs are used to draw multiple incident edges.
