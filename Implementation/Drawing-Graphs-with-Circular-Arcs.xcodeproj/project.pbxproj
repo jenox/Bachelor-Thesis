@@ -1,0 +1,486 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		CB361D781E6C7A2E00BCA82C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB361D771E6C7A2E00BCA82C /* AppDelegate.swift */; };
+		CB361D7A1E6C7A2E00BCA82C /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB361D791E6C7A2E00BCA82C /* Document.swift */; };
+		CB361D7F1E6C7A2E00BCA82C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CB361D7E1E6C7A2E00BCA82C /* Assets.xcassets */; };
+		CB361D821E6C7A2E00BCA82C /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = CB361D801E6C7A2E00BCA82C /* MainMenu.xib */; };
+		CB361DE31E6C936500BCA82C /* HashHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB361DE21E6C936500BCA82C /* HashHelper.swift */; };
+		CB361E061E6C97CE00BCA82C /* CGPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB361DFC1E6C97CE00BCA82C /* CGPoint.swift */; };
+		CB361E071E6C97CE00BCA82C /* CGSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB361DFD1E6C97CE00BCA82C /* CGSize.swift */; };
+		CB361E081E6C97CE00BCA82C /* CGRect.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB361DFE1E6C97CE00BCA82C /* CGRect.swift */; };
+		CB361E091E6C97CE00BCA82C /* CGRectEdge.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB361DFF1E6C97CE00BCA82C /* CGRectEdge.swift */; };
+		CB361E0A1E6C97CE00BCA82C /* CGVector.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB361E001E6C97CE00BCA82C /* CGVector.swift */; };
+		CB361E0B1E6C97CE00BCA82C /* CGAngle.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB361E011E6C97CE00BCA82C /* CGAngle.swift */; };
+		CB361E0C1E6C97CE00BCA82C /* CGAffineTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB361E021E6C97CE00BCA82C /* CGAffineTransform.swift */; };
+		CB361E0D1E6C97CE00BCA82C /* CGAffineTransform+Approximation.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB361E031E6C97CE00BCA82C /* CGAffineTransform+Approximation.swift */; };
+		CB361E0E1E6C97CE00BCA82C /* CGGeometry+AffineTransformable.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB361E041E6C97CE00BCA82C /* CGGeometry+AffineTransformable.swift */; };
+		CB361E0F1E6C97CE00BCA82C /* CGGeometry+Roundable.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB361E051E6C97CE00BCA82C /* CGGeometry+Roundable.swift */; };
+		CB361E111E6C97D200BCA82C /* CircularArc.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB361E101E6C97D200BCA82C /* CircularArc.swift */; };
+		CB361E171E6C97D900BCA82C /* UndirectedGraph.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB361E121E6C97D900BCA82C /* UndirectedGraph.swift */; };
+		CB361E181E6C97D900BCA82C /* UndirectedGraph+GraphML.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB361E131E6C97D900BCA82C /* UndirectedGraph+GraphML.swift */; };
+		CB361E191E6C97D900BCA82C /* UndirectedVertex.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB361E141E6C97D900BCA82C /* UndirectedVertex.swift */; };
+		CB361E1A1E6C97D900BCA82C /* UndirectedEdge.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB361E151E6C97D900BCA82C /* UndirectedEdge.swift */; };
+		CB361E1B1E6C97D900BCA82C /* UndirectedPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB361E161E6C97D900BCA82C /* UndirectedPath.swift */; };
+		CB361E231E6C97E000BCA82C /* Multiset.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB361E1C1E6C97E000BCA82C /* Multiset.swift */; };
+		CB361E2E1E6C97E700BCA82C /* ConfigurationProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB361E2A1E6C97E700BCA82C /* ConfigurationProtocol.swift */; };
+		CB361E2F1E6C97E700BCA82C /* EvaluatedConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB361E2B1E6C97E700BCA82C /* EvaluatedConfiguration.swift */; };
+		CB361E301E6C97E700BCA82C /* OptimizationMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB361E2C1E6C97E700BCA82C /* OptimizationMode.swift */; };
+		CB361E311E6C97E700BCA82C /* GenericHillClimber.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB361E2D1E6C97E700BCA82C /* GenericHillClimber.swift */; };
+		CB361E3A1E6C97F000BCA82C /* GreedilyRealizableSequenceOfPaths.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB361E321E6C97F000BCA82C /* GreedilyRealizableSequenceOfPaths.swift */; };
+		CB361E3B1E6C97F000BCA82C /* GreedyGraphDecomposition.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB361E331E6C97F000BCA82C /* GreedyGraphDecomposition.swift */; };
+		CB361E3C1E6C97F000BCA82C /* MappedAccessConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB361E341E6C97F000BCA82C /* MappedAccessConfiguration.swift */; };
+		CB361E3D1E6C97F000BCA82C /* Drawing.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB361E351E6C97F000BCA82C /* Drawing.swift */; };
+		CB361E3E1E6C97F000BCA82C /* ConcreteHillClimber.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB361E361E6C97F000BCA82C /* ConcreteHillClimber.swift */; };
+		CB361E3F1E6C97F000BCA82C /* ValidConfigurationBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB361E371E6C97F000BCA82C /* ValidConfigurationBuilder.swift */; };
+		CB361E401E6C97F000BCA82C /* VectorAccessConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB361E381E6C97F000BCA82C /* VectorAccessConfiguration.swift */; };
+		CB361E411E6C97F000BCA82C /* GeneralizedCoordinate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB361E391E6C97F000BCA82C /* GeneralizedCoordinate.swift */; };
+		CBA2E9151E6F23F100A02550 /* Document+Graph.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBA2E9141E6F23F100A02550 /* Document+Graph.swift */; };
+		CBA2E9171E6F23F900A02550 /* Document+Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBA2E9161E6F23F900A02550 /* Document+Configuration.swift */; };
+		CBA2E9191E6F240000A02550 /* Document+Paths.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBA2E9181E6F240000A02550 /* Document+Paths.swift */; };
+		CBEE685B1E8DC2CD0014148E /* CanvasViewUndoDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBEE685A1E8DC2CD0014148E /* CanvasViewUndoDelegate.swift */; };
+		CBF0E5671E6C9C120017B002 /* CanvasView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBF0E5661E6C9C120017B002 /* CanvasView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		CB361D741E6C7A2E00BCA82C /* Graphs.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Graphs.app; path = "Drawing Graphs with Circular Arcs.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CB361D771E6C7A2E00BCA82C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		CB361D791E6C7A2E00BCA82C /* Document.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Document.swift; sourceTree = "<group>"; };
+		CB361D7E1E6C7A2E00BCA82C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		CB361D811E6C7A2E00BCA82C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		CB361D831E6C7A2E00BCA82C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CB361DE21E6C936500BCA82C /* HashHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HashHelper.swift; sourceTree = "<group>"; };
+		CB361DFC1E6C97CE00BCA82C /* CGPoint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CGPoint.swift; sourceTree = "<group>"; };
+		CB361DFD1E6C97CE00BCA82C /* CGSize.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CGSize.swift; sourceTree = "<group>"; };
+		CB361DFE1E6C97CE00BCA82C /* CGRect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CGRect.swift; sourceTree = "<group>"; };
+		CB361DFF1E6C97CE00BCA82C /* CGRectEdge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CGRectEdge.swift; sourceTree = "<group>"; };
+		CB361E001E6C97CE00BCA82C /* CGVector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CGVector.swift; sourceTree = "<group>"; };
+		CB361E011E6C97CE00BCA82C /* CGAngle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CGAngle.swift; sourceTree = "<group>"; };
+		CB361E021E6C97CE00BCA82C /* CGAffineTransform.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CGAffineTransform.swift; sourceTree = "<group>"; };
+		CB361E031E6C97CE00BCA82C /* CGAffineTransform+Approximation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGAffineTransform+Approximation.swift"; sourceTree = "<group>"; };
+		CB361E041E6C97CE00BCA82C /* CGGeometry+AffineTransformable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGGeometry+AffineTransformable.swift"; sourceTree = "<group>"; };
+		CB361E051E6C97CE00BCA82C /* CGGeometry+Roundable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGGeometry+Roundable.swift"; sourceTree = "<group>"; };
+		CB361E101E6C97D200BCA82C /* CircularArc.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircularArc.swift; sourceTree = "<group>"; };
+		CB361E121E6C97D900BCA82C /* UndirectedGraph.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UndirectedGraph.swift; sourceTree = "<group>"; };
+		CB361E131E6C97D900BCA82C /* UndirectedGraph+GraphML.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UndirectedGraph+GraphML.swift"; sourceTree = "<group>"; };
+		CB361E141E6C97D900BCA82C /* UndirectedVertex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UndirectedVertex.swift; sourceTree = "<group>"; };
+		CB361E151E6C97D900BCA82C /* UndirectedEdge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UndirectedEdge.swift; sourceTree = "<group>"; };
+		CB361E161E6C97D900BCA82C /* UndirectedPath.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UndirectedPath.swift; sourceTree = "<group>"; };
+		CB361E1C1E6C97E000BCA82C /* Multiset.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Multiset.swift; sourceTree = "<group>"; };
+		CB361E2A1E6C97E700BCA82C /* ConfigurationProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfigurationProtocol.swift; sourceTree = "<group>"; };
+		CB361E2B1E6C97E700BCA82C /* EvaluatedConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EvaluatedConfiguration.swift; sourceTree = "<group>"; };
+		CB361E2C1E6C97E700BCA82C /* OptimizationMode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OptimizationMode.swift; sourceTree = "<group>"; };
+		CB361E2D1E6C97E700BCA82C /* GenericHillClimber.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenericHillClimber.swift; sourceTree = "<group>"; };
+		CB361E321E6C97F000BCA82C /* GreedilyRealizableSequenceOfPaths.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GreedilyRealizableSequenceOfPaths.swift; sourceTree = "<group>"; };
+		CB361E331E6C97F000BCA82C /* GreedyGraphDecomposition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GreedyGraphDecomposition.swift; sourceTree = "<group>"; };
+		CB361E341E6C97F000BCA82C /* MappedAccessConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MappedAccessConfiguration.swift; sourceTree = "<group>"; };
+		CB361E351E6C97F000BCA82C /* Drawing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Drawing.swift; sourceTree = "<group>"; };
+		CB361E361E6C97F000BCA82C /* ConcreteHillClimber.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConcreteHillClimber.swift; sourceTree = "<group>"; };
+		CB361E371E6C97F000BCA82C /* ValidConfigurationBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValidConfigurationBuilder.swift; sourceTree = "<group>"; };
+		CB361E381E6C97F000BCA82C /* VectorAccessConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VectorAccessConfiguration.swift; sourceTree = "<group>"; };
+		CB361E391E6C97F000BCA82C /* GeneralizedCoordinate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeneralizedCoordinate.swift; sourceTree = "<group>"; };
+		CBA2E9141E6F23F100A02550 /* Document+Graph.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Document+Graph.swift"; sourceTree = "<group>"; };
+		CBA2E9161E6F23F900A02550 /* Document+Configuration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Document+Configuration.swift"; sourceTree = "<group>"; };
+		CBA2E9181E6F240000A02550 /* Document+Paths.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Document+Paths.swift"; sourceTree = "<group>"; };
+		CBEE685A1E8DC2CD0014148E /* CanvasViewUndoDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CanvasViewUndoDelegate.swift; sourceTree = "<group>"; };
+		CBF0E5661E6C9C120017B002 /* CanvasView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CanvasView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		CB361D711E6C7A2E00BCA82C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		CB361D6B1E6C7A2E00BCA82C = {
+			isa = PBXGroup;
+			children = (
+				CB361D761E6C7A2E00BCA82C /* Sources */,
+				CB361DA41E6C925E00BCA82C /* Resources */,
+				CB361D751E6C7A2E00BCA82C /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		CB361D751E6C7A2E00BCA82C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				CB361D741E6C7A2E00BCA82C /* Graphs.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		CB361D761E6C7A2E00BCA82C /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				CB361DFB1E6C97A800BCA82C /* Algorithm */,
+				CB361DFA1E6C97A600BCA82C /* Optimization */,
+				CB361DF91E6C97A500BCA82C /* UndirectedGraph */,
+				CB361DF61E6C97A100BCA82C /* CGGeometry */,
+				CBEE68591E8DBDE20014148E /* User Interface */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		CB361DA41E6C925E00BCA82C /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				CB361D7E1E6C7A2E00BCA82C /* Assets.xcassets */,
+				CB361D801E6C7A2E00BCA82C /* MainMenu.xib */,
+				CB361D831E6C7A2E00BCA82C /* Info.plist */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		CB361DF61E6C97A100BCA82C /* CGGeometry */ = {
+			isa = PBXGroup;
+			children = (
+				CB361DFC1E6C97CE00BCA82C /* CGPoint.swift */,
+				CB361DFD1E6C97CE00BCA82C /* CGSize.swift */,
+				CB361DFE1E6C97CE00BCA82C /* CGRect.swift */,
+				CB361DFF1E6C97CE00BCA82C /* CGRectEdge.swift */,
+				CB361E001E6C97CE00BCA82C /* CGVector.swift */,
+				CB361E011E6C97CE00BCA82C /* CGAngle.swift */,
+				CB361E021E6C97CE00BCA82C /* CGAffineTransform.swift */,
+				CB361E031E6C97CE00BCA82C /* CGAffineTransform+Approximation.swift */,
+				CB361E041E6C97CE00BCA82C /* CGGeometry+AffineTransformable.swift */,
+				CB361E051E6C97CE00BCA82C /* CGGeometry+Roundable.swift */,
+			);
+			path = CGGeometry;
+			sourceTree = "<group>";
+		};
+		CB361DF91E6C97A500BCA82C /* UndirectedGraph */ = {
+			isa = PBXGroup;
+			children = (
+				CB361E121E6C97D900BCA82C /* UndirectedGraph.swift */,
+				CB361E131E6C97D900BCA82C /* UndirectedGraph+GraphML.swift */,
+				CB361E141E6C97D900BCA82C /* UndirectedVertex.swift */,
+				CB361E151E6C97D900BCA82C /* UndirectedEdge.swift */,
+				CB361E161E6C97D900BCA82C /* UndirectedPath.swift */,
+				CB361E1C1E6C97E000BCA82C /* Multiset.swift */,
+				CB361DE21E6C936500BCA82C /* HashHelper.swift */,
+			);
+			path = UndirectedGraph;
+			sourceTree = "<group>";
+		};
+		CB361DFA1E6C97A600BCA82C /* Optimization */ = {
+			isa = PBXGroup;
+			children = (
+				CB361E2C1E6C97E700BCA82C /* OptimizationMode.swift */,
+				CB361E2A1E6C97E700BCA82C /* ConfigurationProtocol.swift */,
+				CB361E2B1E6C97E700BCA82C /* EvaluatedConfiguration.swift */,
+				CB361E2D1E6C97E700BCA82C /* GenericHillClimber.swift */,
+			);
+			path = Optimization;
+			sourceTree = "<group>";
+		};
+		CB361DFB1E6C97A800BCA82C /* Algorithm */ = {
+			isa = PBXGroup;
+			children = (
+				CB361E321E6C97F000BCA82C /* GreedilyRealizableSequenceOfPaths.swift */,
+				CB361E331E6C97F000BCA82C /* GreedyGraphDecomposition.swift */,
+				CB361E101E6C97D200BCA82C /* CircularArc.swift */,
+				CB361E391E6C97F000BCA82C /* GeneralizedCoordinate.swift */,
+				CB361E341E6C97F000BCA82C /* MappedAccessConfiguration.swift */,
+				CB361E381E6C97F000BCA82C /* VectorAccessConfiguration.swift */,
+				CB361E351E6C97F000BCA82C /* Drawing.swift */,
+				CB361E361E6C97F000BCA82C /* ConcreteHillClimber.swift */,
+				CB361E371E6C97F000BCA82C /* ValidConfigurationBuilder.swift */,
+			);
+			path = Algorithm;
+			sourceTree = "<group>";
+		};
+		CBEE68591E8DBDE20014148E /* User Interface */ = {
+			isa = PBXGroup;
+			children = (
+				CB361D771E6C7A2E00BCA82C /* AppDelegate.swift */,
+				CB361D791E6C7A2E00BCA82C /* Document.swift */,
+				CBA2E9161E6F23F900A02550 /* Document+Configuration.swift */,
+				CBA2E9141E6F23F100A02550 /* Document+Graph.swift */,
+				CBA2E9181E6F240000A02550 /* Document+Paths.swift */,
+				CBF0E5661E6C9C120017B002 /* CanvasView.swift */,
+				CBEE685A1E8DC2CD0014148E /* CanvasViewUndoDelegate.swift */,
+			);
+			name = "User Interface";
+			path = "User-Interface";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		CB361D731E6C7A2E00BCA82C /* Drawing Graphs with Circular Arcs */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CB361D861E6C7A2E00BCA82C /* Build configuration list for PBXNativeTarget "Drawing Graphs with Circular Arcs" */;
+			buildPhases = (
+				CB361D701E6C7A2E00BCA82C /* Sources */,
+				CB361D711E6C7A2E00BCA82C /* Frameworks */,
+				CB361D721E6C7A2E00BCA82C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Drawing Graphs with Circular Arcs";
+			productName = Graphs;
+			productReference = CB361D741E6C7A2E00BCA82C /* Graphs.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		CB361D6C1E6C7A2E00BCA82C /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0820;
+				LastUpgradeCheck = 0820;
+				ORGANIZATIONNAME = "Christian Schnorr";
+				TargetAttributes = {
+					CB361D731E6C7A2E00BCA82C = {
+						CreatedOnToolsVersion = 8.2.1;
+						DevelopmentTeam = JDQR3BNJKW;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = CB361D6F1E6C7A2E00BCA82C /* Build configuration list for PBXProject "Drawing-Graphs-with-Circular-Arcs" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = CB361D6B1E6C7A2E00BCA82C;
+			productRefGroup = CB361D751E6C7A2E00BCA82C /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				CB361D731E6C7A2E00BCA82C /* Drawing Graphs with Circular Arcs */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		CB361D721E6C7A2E00BCA82C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CB361D7F1E6C7A2E00BCA82C /* Assets.xcassets in Resources */,
+				CB361D821E6C7A2E00BCA82C /* MainMenu.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		CB361D701E6C7A2E00BCA82C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CB361E3A1E6C97F000BCA82C /* GreedilyRealizableSequenceOfPaths.swift in Sources */,
+				CB361E3B1E6C97F000BCA82C /* GreedyGraphDecomposition.swift in Sources */,
+				CB361E111E6C97D200BCA82C /* CircularArc.swift in Sources */,
+				CB361E411E6C97F000BCA82C /* GeneralizedCoordinate.swift in Sources */,
+				CB361E3C1E6C97F000BCA82C /* MappedAccessConfiguration.swift in Sources */,
+				CB361E401E6C97F000BCA82C /* VectorAccessConfiguration.swift in Sources */,
+				CB361E3D1E6C97F000BCA82C /* Drawing.swift in Sources */,
+				CB361E3E1E6C97F000BCA82C /* ConcreteHillClimber.swift in Sources */,
+				CB361E3F1E6C97F000BCA82C /* ValidConfigurationBuilder.swift in Sources */,
+				CB361E301E6C97E700BCA82C /* OptimizationMode.swift in Sources */,
+				CB361E2E1E6C97E700BCA82C /* ConfigurationProtocol.swift in Sources */,
+				CB361E2F1E6C97E700BCA82C /* EvaluatedConfiguration.swift in Sources */,
+				CB361E311E6C97E700BCA82C /* GenericHillClimber.swift in Sources */,
+				CB361E171E6C97D900BCA82C /* UndirectedGraph.swift in Sources */,
+				CB361E181E6C97D900BCA82C /* UndirectedGraph+GraphML.swift in Sources */,
+				CB361E191E6C97D900BCA82C /* UndirectedVertex.swift in Sources */,
+				CB361E1A1E6C97D900BCA82C /* UndirectedEdge.swift in Sources */,
+				CB361E1B1E6C97D900BCA82C /* UndirectedPath.swift in Sources */,
+				CB361E231E6C97E000BCA82C /* Multiset.swift in Sources */,
+				CB361DE31E6C936500BCA82C /* HashHelper.swift in Sources */,
+				CB361E061E6C97CE00BCA82C /* CGPoint.swift in Sources */,
+				CB361E071E6C97CE00BCA82C /* CGSize.swift in Sources */,
+				CB361E081E6C97CE00BCA82C /* CGRect.swift in Sources */,
+				CB361E091E6C97CE00BCA82C /* CGRectEdge.swift in Sources */,
+				CB361E0A1E6C97CE00BCA82C /* CGVector.swift in Sources */,
+				CB361E0B1E6C97CE00BCA82C /* CGAngle.swift in Sources */,
+				CB361E0C1E6C97CE00BCA82C /* CGAffineTransform.swift in Sources */,
+				CB361E0D1E6C97CE00BCA82C /* CGAffineTransform+Approximation.swift in Sources */,
+				CB361E0E1E6C97CE00BCA82C /* CGGeometry+AffineTransformable.swift in Sources */,
+				CB361E0F1E6C97CE00BCA82C /* CGGeometry+Roundable.swift in Sources */,
+				CB361D781E6C7A2E00BCA82C /* AppDelegate.swift in Sources */,
+				CB361D7A1E6C7A2E00BCA82C /* Document.swift in Sources */,
+				CBA2E9171E6F23F900A02550 /* Document+Configuration.swift in Sources */,
+				CBA2E9151E6F23F100A02550 /* Document+Graph.swift in Sources */,
+				CBA2E9191E6F240000A02550 /* Document+Paths.swift in Sources */,
+				CBF0E5671E6C9C120017B002 /* CanvasView.swift in Sources */,
+				CBEE685B1E8DC2CD0014148E /* CanvasViewUndoDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		CB361D801E6C7A2E00BCA82C /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CB361D811E6C7A2E00BCA82C /* Base */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		CB361D841E6C7A2E00BCA82C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		CB361D851E6C7A2E00BCA82C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+			};
+			name = Release;
+		};
+		CB361D871E6C7A2E00BCA82C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = JDQR3BNJKW;
+				INFOPLIST_FILE = Resources/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = net.jenox.Graphs;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Debug;
+		};
+		CB361D881E6C7A2E00BCA82C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = JDQR3BNJKW;
+				INFOPLIST_FILE = Resources/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = net.jenox.Graphs;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		CB361D6F1E6C7A2E00BCA82C /* Build configuration list for PBXProject "Drawing-Graphs-with-Circular-Arcs" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CB361D841E6C7A2E00BCA82C /* Debug */,
+				CB361D851E6C7A2E00BCA82C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CB361D861E6C7A2E00BCA82C /* Build configuration list for PBXNativeTarget "Drawing Graphs with Circular Arcs" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CB361D871E6C7A2E00BCA82C /* Debug */,
+				CB361D881E6C7A2E00BCA82C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = CB361D6C1E6C7A2E00BCA82C /* Project object */;
+}
