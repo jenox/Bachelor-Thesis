@@ -63,7 +63,6 @@ private class Parser {
             self.paths = try GreedilyRealizableSequenceOfPaths(with: paths)
         }
         catch {
-            print("not realizable")
             throw Error.pathsNotGreedilyRealizable
         }
     }

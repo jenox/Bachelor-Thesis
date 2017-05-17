@@ -108,7 +108,6 @@ private class Parser: NSObject, XMLParserDelegate {
     public func parser(_ parser: XMLParser, didStartElement tag: String, namespaceURI: String?, qualifiedName: String?, attributes: [String: String] = [:]) {
         if tag == "configuration" {
             guard case .waitingForConfiguration = self.state else {
-                print("error: abort 1")
                 return parser.abortParsing()
             }
 
@@ -116,12 +115,10 @@ private class Parser: NSObject, XMLParserDelegate {
         }
         else if tag == "path" {
             guard case .parsingConfiguration = self.state else {
-                print("error: abort 2")
                 return parser.abortParsing()
             }
 
             guard let angle = self.angle(from: attributes) else {
-                print("error: abort 3", attributes)
                 return parser.abortParsing()
             }
 
@@ -130,12 +127,10 @@ private class Parser: NSObject, XMLParserDelegate {
         }
         else if tag == "vertex" {
             guard case .parsingPath = self.state else {
-                print("error: abort 4")
                 return parser.abortParsing()
             }
 
             guard let name = self.name(from: attributes) else {
-                print("error: abort 5")
                 return parser.abortParsing()
             }
 
@@ -158,7 +153,6 @@ private class Parser: NSObject, XMLParserDelegate {
     public func parser(_ parser: XMLParser, didEndElement tag: String, namespaceURI: String?, qualifiedName: String?) {
         if tag == "vertex" {
             guard case .parsingVertex = self.state else {
-                print("error: abort 6")
                 return parser.abortParsing()
             }
 
@@ -166,7 +160,6 @@ private class Parser: NSObject, XMLParserDelegate {
         }
         else if tag == "path" {
             guard case .parsingPath = self.state else {
-                print("error: abort 7")
                 return parser.abortParsing()
             }
 
@@ -174,7 +167,6 @@ private class Parser: NSObject, XMLParserDelegate {
             let vertices = self.working!.1
 
             guard vertices.count >= 2 && Set(vertices).count == vertices.count else {
-                print("error: abort 8")
                 return parser.abortParsing()
             }
 
@@ -193,7 +185,6 @@ private class Parser: NSObject, XMLParserDelegate {
         }
         else if tag == "configuration" {
             guard case .parsingConfiguration = self.state else {
-                print("error: abort 9")
                 return parser.abortParsing()
             }
 
