@@ -243,7 +243,9 @@ public func abs(_ angle: CGAngle) -> CGAngle {
 extension CGAngle {
     /// [0°, 180°]
     public init(between a: CGVector, and b: CGVector) {
-        self = CGAngle.acos(a.normalized * b.normalized)
+        let product = fmin(fmax(a.normalized * b.normalized, -1), 1)
+
+        self = CGAngle.acos(product)
     }
 
     /// [-180°, 180°)

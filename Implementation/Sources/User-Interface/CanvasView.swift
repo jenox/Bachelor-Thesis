@@ -133,14 +133,14 @@ public class CanvasView: NSView {
 
     // MARK: - Hill Climbing
 
-    private var climber: ConcreteHillClimber? = nil {
+    private var optimizer: Optimizer? = nil {
         didSet {
             self.delegate?.undoManager?.registerUndo(withTarget: self, handler: {
-                $0.climber = oldValue
+                $0.optimizer = oldValue
             })
 
-            if let climber = self.climber {
-                self.committedConfiguration = climber.configuration
+            if let optimizer = self.optimizer {
+                self.committedConfiguration = optimizer.configuration
             }
         }
     }
@@ -193,8 +193,12 @@ public class CanvasView: NSView {
     }
 
     private func drawHUD(in context: CGContext) {
-        let drawing = self.drawing
-        let energy = drawing.energy
+        self.drawEnergy(in: context)
+        self.drawLombardiness(in: context)
+    }
+
+    private func drawEnergy(in context: CGContext) {
+        let energy = self.drawing.energy
 
         let formatter = NumberFormatter()
         formatter.minimumIntegerDigits = 1
@@ -202,6 +206,24 @@ public class CanvasView: NSView {
         formatter.maximumFractionDigits = 4
 
         let text = formatter.string(from: NSNumber(value: energy))!
+
+        self.draw(text, at: CGPoint(x: self.bounds.width - 5, y: 5), in: context, alignment: .right)
+    }
+
+    private func drawLombardiness(in context: CGContext) {
+        let lombardiness = self.drawing.lombardiness
+
+        let formatter = NumberFormatter()
+        formatter.minimumIntegerDigits = 1
+        formatter.minimumFractionDigits = 5
+        formatter.maximumFractionDigits = 5
+
+        let text = formatter.string(from: NSNumber(value: lombardiness))!
+
+        self.draw(text, at: CGPoint(x: 5, y: 5), in: context, alignment: .left)
+    }
+
+    private func draw(_ text: String, at position: CGPoint, in context: CGContext, alignment: NSTextAlignment) {
         let attributes = [
             NSFontAttributeName: NSFont(name: "Courier", size: 16)!
         ]
@@ -210,8 +232,19 @@ public class CanvasView: NSView {
         let line = CTLineCreateWithAttributedString(string)
         let width = CTLineGetBoundsWithOptions(line, .useOpticalBounds).width
 
-        context.textPosition.x = self.bounds.width - width - 5
-        context.textPosition.y = 5
+        switch alignment {
+        case .left:
+            context.textPosition.x = position.x
+            context.textPosition.y = position.y
+        case .center:
+            context.textPosition.x = position.x - width / 2
+            context.textPosition.y = position.y
+        case .right:
+            context.textPosition.x = position.x - width
+            context.textPosition.y = position.y
+        default:
+            fatalError()
+        }
 
         CTLineDraw(line, context)
     }
@@ -235,19 +268,19 @@ public class CanvasView: NSView {
         }
     }
 
-    private func registerUndo(for climber: ConcreteHillClimber) {
+    private func registerUndo(for optimizer: Optimizer) {
         self.delegate?.undoManager?.registerUndo(withTarget: self, handler: {
-            climber.undo()
+            optimizer.undo()
 
-            $0.registerRedo(for: climber)
+            $0.registerRedo(for: optimizer)
         })
     }
 
-    private func registerRedo(for climber: ConcreteHillClimber) {
+    private func registerRedo(for optimizer: Optimizer) {
         self.delegate?.undoManager?.registerUndo(withTarget: self, handler: {
-            climber.redo()
+            optimizer.redo()
 
-            $0.registerUndo(for: climber)
+            $0.registerUndo(for: optimizer)
         })
     }
 
@@ -382,7 +415,7 @@ public class CanvasView: NSView {
         case .adjustingVertex(_, let changed):
             if changed {
                 self.performGroupedForUndo({
-                    self.climber = nil
+                    self.optimizer = nil
                     self.committedConfiguration = self.currentConfiguration
                 })
             }
@@ -391,7 +424,7 @@ public class CanvasView: NSView {
         case .adjustingPath(_, let changed):
             if changed {
                 self.performGroupedForUndo({
-                    self.climber = nil
+                    self.optimizer = nil
                     self.committedConfiguration = self.currentConfiguration
                 })
             }
@@ -464,22 +497,30 @@ public class CanvasView: NSView {
     }
 
     private func step() {
+        let before = CACurrentMediaTime()
+
         self.performGroupedForUndo({
-            if let climber = self.climber {
-                climber.climb()
+            if let optimizer = self.optimizer {
+                optimizer.step()
 
-                self.committedConfiguration = climber.configuration
+                self.committedConfiguration = optimizer.configuration
 
-                self.registerUndo(for: climber)
+                self.registerUndo(for: optimizer)
             }
             else {
-                let climber = ConcreteHillClimber(from: self.currentConfiguration)
-                climber.climb()
+                let optimizer = ConcreteHillClimber(from: self.currentConfiguration)
+//                let optimizer = DerivativeBasedOptimizer(from: self.currentConfiguration)
+                optimizer.step()
 
-                self.climber = climber
-                self.committedConfiguration = climber.configuration
+                self.optimizer = optimizer
+                self.committedConfiguration = optimizer.configuration
             }
         })
+
+        let after = CACurrentMediaTime()
+        let delta = after - before
+
+        Swift.print(String(format: "%#8.3fms", 1000 * delta))
     }
 
 
@@ -492,7 +533,7 @@ public class CanvasView: NSView {
         let configuration = builder.configuration
 
         self.performGroupedForUndo({
-            self.climber = nil
+            self.optimizer = nil
             self.committedConfiguration = configuration
         })
     }

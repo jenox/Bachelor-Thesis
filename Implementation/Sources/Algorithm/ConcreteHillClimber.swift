@@ -1,4 +1,4 @@
-import CoreGraphics
+import Foundation
 
 
 /**
@@ -6,7 +6,7 @@ import CoreGraphics
  *
  * - Author: christian.schnorr@me.com
  */
-public final class ConcreteHillClimber {
+public final class ConcreteHillClimber: Optimizer {
     public typealias Graph = UndirectedGraph
     public typealias Vertex = Graph.Vertex
     public typealias Edge = Graph.Edge
@@ -54,7 +54,7 @@ public final class ConcreteHillClimber {
     }
 
     @discardableResult
-    public func climb() -> Double {
+    public func step() -> Double {
         return self.climber.climb()
     }
 

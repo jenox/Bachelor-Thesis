@@ -41,6 +41,8 @@
 		CB361E3F1E6C97F000BCA82C /* ValidConfigurationBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB361E371E6C97F000BCA82C /* ValidConfigurationBuilder.swift */; };
 		CB361E401E6C97F000BCA82C /* VectorAccessConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB361E381E6C97F000BCA82C /* VectorAccessConfiguration.swift */; };
 		CB361E411E6C97F000BCA82C /* GeneralizedCoordinate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB361E391E6C97F000BCA82C /* GeneralizedCoordinate.swift */; };
+		CB6CB9CB1ECE152B00D30A68 /* DerivativeBasedOptimizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB6CB9CA1ECE152B00D30A68 /* DerivativeBasedOptimizer.swift */; };
+		CB6CB9CD1ECE16AB00D30A68 /* Optimizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB6CB9CC1ECE16AB00D30A68 /* Optimizer.swift */; };
 		CBA2E9151E6F23F100A02550 /* Document+Graph.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBA2E9141E6F23F100A02550 /* Document+Graph.swift */; };
 		CBA2E9171E6F23F900A02550 /* Document+Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBA2E9161E6F23F900A02550 /* Document+Configuration.swift */; };
 		CBA2E9191E6F240000A02550 /* Document+Paths.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBA2E9181E6F240000A02550 /* Document+Paths.swift */; };
@@ -85,6 +87,8 @@
 		CB361E371E6C97F000BCA82C /* ValidConfigurationBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValidConfigurationBuilder.swift; sourceTree = "<group>"; };
 		CB361E381E6C97F000BCA82C /* VectorAccessConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VectorAccessConfiguration.swift; sourceTree = "<group>"; };
 		CB361E391E6C97F000BCA82C /* GeneralizedCoordinate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeneralizedCoordinate.swift; sourceTree = "<group>"; };
+		CB6CB9CA1ECE152B00D30A68 /* DerivativeBasedOptimizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DerivativeBasedOptimizer.swift; sourceTree = "<group>"; };
+		CB6CB9CC1ECE16AB00D30A68 /* Optimizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Optimizer.swift; sourceTree = "<group>"; };
 		CBA2E9141E6F23F100A02550 /* Document+Graph.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Document+Graph.swift"; sourceTree = "<group>"; };
 		CBA2E9161E6F23F900A02550 /* Document+Configuration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Document+Configuration.swift"; sourceTree = "<group>"; };
 		CBA2E9181E6F240000A02550 /* Document+Paths.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Document+Paths.swift"; sourceTree = "<group>"; };
@@ -194,7 +198,9 @@
 				CB361E341E6C97F000BCA82C /* MappedAccessConfiguration.swift */,
 				CB361E381E6C97F000BCA82C /* VectorAccessConfiguration.swift */,
 				CB361E351E6C97F000BCA82C /* Drawing.swift */,
+				CB6CB9CC1ECE16AB00D30A68 /* Optimizer.swift */,
 				CB361E361E6C97F000BCA82C /* ConcreteHillClimber.swift */,
+				CB6CB9CA1ECE152B00D30A68 /* DerivativeBasedOptimizer.swift */,
 				CB361E371E6C97F000BCA82C /* ValidConfigurationBuilder.swift */,
 			);
 			path = Algorithm;
@@ -291,8 +297,10 @@
 				CB361E3B1E6C97F000BCA82C /* GreedyGraphDecomposition.swift in Sources */,
 				CB361E111E6C97D200BCA82C /* CircularArc.swift in Sources */,
 				CB361E411E6C97F000BCA82C /* GeneralizedCoordinate.swift in Sources */,
+				CB6CB9CB1ECE152B00D30A68 /* DerivativeBasedOptimizer.swift in Sources */,
 				CB361E3C1E6C97F000BCA82C /* MappedAccessConfiguration.swift in Sources */,
 				CB361E401E6C97F000BCA82C /* VectorAccessConfiguration.swift in Sources */,
+				CB6CB9CD1ECE16AB00D30A68 /* Optimizer.swift in Sources */,
 				CB361E3D1E6C97F000BCA82C /* Drawing.swift in Sources */,
 				CB361E3E1E6C97F000BCA82C /* ConcreteHillClimber.swift in Sources */,
 				CB361E3F1E6C97F000BCA82C /* ValidConfigurationBuilder.swift in Sources */,

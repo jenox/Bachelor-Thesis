@@ -156,6 +156,18 @@ public struct CircularArc {
         }
     }
 
+    /// The direction in which the circular arc continues to be drawn in the
+    /// point at `progress`.
+    public func derivative(for progress: CGFloat) -> CGVector {
+        let progress = min(max(progress, 0), 1)
+
+        let pq = CGVector(from: self.start, to: self.end)
+        let delta = 2 * (0.5 - progress) * self.angle
+        let tangent = pq.normalized.rotated(by: delta)
+
+        return tangent
+    }
+
     /// The interpolation progress of the point closest to `point` on the
     /// circular arc.
     public func progress(for point: CGPoint) -> Percentage {
