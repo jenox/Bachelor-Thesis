@@ -24,7 +24,7 @@ public class CanvasView: NSView {
 
         self.committedConfiguration = configuration
         self.currentConfiguration = configuration
-        self.drawing = Drawing(for: configuration)
+        self.drawing = ForceDirectedDrawing(for: configuration)
 
         super.init(frame: frame)
     }
@@ -119,11 +119,11 @@ public class CanvasView: NSView {
 
     private var currentConfiguration: Configuration {
         didSet {
-            self.drawing = Drawing(for: self.currentConfiguration)
+            self.drawing = ForceDirectedDrawing(for: self.currentConfiguration)
         }
     }
 
-    private var drawing: Drawing {
+    private var drawing: ForceDirectedDrawing {
         didSet {
             self.setNeedsDisplay(NSRect.infinite)
         }
@@ -182,6 +182,13 @@ public class CanvasView: NSView {
             do {
                 let rect = CGRect(center: location, size: CGSize(width: 8, height: 8))
 
+                do {
+                    var point = location
+                    point.x += 5
+                    point.y += 2
+                    self.draw(vertex.name, at: point, in: context, alignment: .left)
+                }
+
                 context.saveGState()
                 context.beginPath()
                 context.addEllipse(in: rect)
@@ -193,35 +200,39 @@ public class CanvasView: NSView {
     }
 
     private func drawHUD(in context: CGContext) {
-        self.drawEnergy(in: context)
-        self.drawLombardiness(in: context)
-    }
+//        self.drawEnergy(in: context)
+//        self.drawLombardiness(in: context)
 
-    private func drawEnergy(in context: CGContext) {
-        let energy = self.drawing.energy
-
-        let formatter = NumberFormatter()
-        formatter.minimumIntegerDigits = 1
-        formatter.minimumFractionDigits = 4
-        formatter.maximumFractionDigits = 4
-
-        let text = formatter.string(from: NSNumber(value: energy))!
+        let text = self.drawing.hasFiniteEnergy ? "finite" : "infinite"
 
         self.draw(text, at: CGPoint(x: self.bounds.width - 5, y: 5), in: context, alignment: .right)
     }
 
-    private func drawLombardiness(in context: CGContext) {
-        let lombardiness = self.drawing.lombardiness
+//    private func drawEnergy(in context: CGContext) {
+//        let energy = self.drawing.energy
+//
+//        let formatter = NumberFormatter()
+//        formatter.minimumIntegerDigits = 1
+//        formatter.minimumFractionDigits = 4
+//        formatter.maximumFractionDigits = 4
+//
+//        let text = formatter.string(from: NSNumber(value: energy))!
+//
+//        self.draw(text, at: CGPoint(x: self.bounds.width - 5, y: 5), in: context, alignment: .right)
+//    }
 
-        let formatter = NumberFormatter()
-        formatter.minimumIntegerDigits = 1
-        formatter.minimumFractionDigits = 5
-        formatter.maximumFractionDigits = 5
-
-        let text = formatter.string(from: NSNumber(value: lombardiness))!
-
-        self.draw(text, at: CGPoint(x: 5, y: 5), in: context, alignment: .left)
-    }
+//    private func drawLombardiness(in context: CGContext) {
+//        let lombardiness = self.drawing.lombardiness
+//
+//        let formatter = NumberFormatter()
+//        formatter.minimumIntegerDigits = 1
+//        formatter.minimumFractionDigits = 5
+//        formatter.maximumFractionDigits = 5
+//
+//        let text = formatter.string(from: NSNumber(value: lombardiness))!
+//
+//        self.draw(text, at: CGPoint(x: 5, y: 5), in: context, alignment: .left)
+//    }
 
     private func draw(_ text: String, at position: CGPoint, in context: CGContext, alignment: NSTextAlignment) {
         let attributes = [
@@ -463,20 +474,22 @@ public class CanvasView: NSView {
     private var rightMouseDown: Bool = false
 
     public override func rightMouseDown(with event: NSEvent) {
-        guard self.drawing.energy.isFinite else {
-            let error = NSError(domain: "", code: 0, userInfo: [
-                NSLocalizedDescriptionKey: "Cannot hill-climb from state with infinite energy."
-            ])
+//        guard self.drawing.energy.isFinite else {
+//            let error = NSError(domain: "", code: 0, userInfo: [
+//                NSLocalizedDescriptionKey: "Cannot hill-climb from state with infinite energy."
+//            ])
+//
+//            let alert = NSAlert(error: error)
+//            alert.runModal()
+//
+//            return
+//        }
+//
+//        self.rightMouseDown = true
+//
+//        self.stepContinuouslyIfRightMouseDown()
 
-            let alert = NSAlert(error: error)
-            alert.runModal()
-
-            return
-        }
-
-        self.rightMouseDown = true
-
-        self.stepContinuouslyIfRightMouseDown()
+        self.step()
     }
 
     public override func rightMouseUp(with event: NSEvent) {
@@ -499,27 +512,179 @@ public class CanvasView: NSView {
     private func step() {
         let before = CACurrentMediaTime()
 
-        self.performGroupedForUndo({
-            if let optimizer = self.optimizer {
-                optimizer.step()
+//        self.performGroupedForUndo({
+//            if let optimizer = self.optimizer {
+//                optimizer.step()
+//
+//                self.committedConfiguration = optimizer.configuration
+//
+//                self.registerUndo(for: optimizer)
+//            }
+//            else {
+//                let optimizer = ConcreteHillClimber(from: self.currentConfiguration)
+////                let optimizer = DerivativeBasedOptimizer(from: self.currentConfiguration)
+//                optimizer.step()
+//
+//                self.optimizer = optimizer
+//                self.committedConfiguration = optimizer.configuration
+//            }
+//        })
 
-                self.committedConfiguration = optimizer.configuration
+        let configuration = self.committedConfiguration
+        var coordinates = VectorAccessConfiguration(for: configuration).coordinates
 
-                self.registerUndo(for: optimizer)
+        var paths: [Vertex: Path] = [:]
+        var traditionalForces: [Vertex: CGVector] = [:]
+        var generalizedForces: [GeneralizedCoordinate: CGFloat] = [:]
+
+        for path in self.drawing.paths {
+            for vertex in path.internalVertices {
+                paths[vertex] = path
             }
-            else {
-                let optimizer = ConcreteHillClimber(from: self.currentConfiguration)
-//                let optimizer = DerivativeBasedOptimizer(from: self.currentConfiguration)
-                optimizer.step()
+        }
 
-                self.optimizer = optimizer
-                self.committedConfiguration = optimizer.configuration
+        for vertex in self.drawing.vertices {
+            traditionalForces[vertex] = self.drawing.force(actingOn: vertex)
+        }
+
+
+        Swift.print()
+
+        for q_j in coordinates {
+            var Q_j = 0 as CGFloat
+
+            switch q_j {
+            case .x(let vertex, _):
+                for other in self.drawing.vertices {
+                    let drdq: CGVector
+
+                    if other === vertex {
+                        drdq = CGVector(dx: 1, dy: 0)
+                    }
+                    else if let path = paths[other] {
+                        let arc = self.drawing.arc(for: path)
+                        let progress = configuration.progresses[other]!
+
+                        if vertex === path.vertices.first {
+                            drdq = arc.derivativeWithRespectToStartX(at: progress)
+                        }
+                        else if vertex === path.vertices.last {
+                            drdq = arc.derivativeWithRespectToEndX(at: progress)
+                        }
+                        else {
+                            drdq = .zero
+                        }
+                    }
+                    else {
+                        drdq = .zero
+                    }
+
+                    Q_j += traditionalForces[other]! * drdq
+                }
+            case .y(let vertex, _):
+                for other in self.drawing.vertices {
+                    let drdq: CGVector
+
+                    if other === vertex {
+                        drdq = CGVector(dx: 0, dy: 1)
+                    }
+                    else if let path = paths[other] {
+                        let arc = self.drawing.arc(for: path)
+                        let progress = configuration.progresses[other]!
+
+                        if vertex === path.vertices.first {
+                            drdq = arc.derivativeWithRespectToStartY(at: progress)
+                        }
+                        else if vertex === path.vertices.last {
+                            drdq = arc.derivativeWithRespectToEndY(at: progress)
+                        }
+                        else {
+                            drdq = .zero
+                        }
+                    }
+                    else {
+                        drdq = .zero
+                    }
+
+                    Q_j += traditionalForces[other]! * drdq
+                }
+            case .progress(let vertex, _):
+                let path = paths[vertex]!
+                let arc = self.drawing.arc(for: path)
+                let progress = configuration.progresses[vertex]!
+                let drdq = arc.derivativeWithRespectToProgress(at: progress)
+
+                Q_j += traditionalForces[vertex]! * drdq
+            case .angle(let path, _):
+                for other in self.drawing.vertices {
+                    let drdq: CGVector
+
+                    if path.internalVertices.contains(other) {
+                        let arc = self.drawing.arc(for: path)
+                        let progress = configuration.progresses[other]!
+
+                        drdq = arc.derivativeWithRespectToAngle(at: progress)
+                    }
+                    else {
+                        drdq = .zero
+                    }
+
+                    Q_j += traditionalForces[other]! * drdq
+                }
             }
-        })
+
+            generalizedForces[q_j] = Q_j
+        }
+
+        Swift.print()
+        Swift.print("TRADITIONAL FORCES")
+        Swift.print("==================")
+        for (vertex, force) in traditionalForces {
+            Swift.print("\(vertex):", force)
+        }
+
+        Swift.print()
+        Swift.print("GENERALIZED FORCES")
+        Swift.print("==================")
+        for (vertex, force) in generalizedForces {
+            Swift.print("\(vertex):", force)
+        }
+
+        do {
+            var scale1 = 1 as CGFloat
+            var scale2 = 1 as CGFloat
+
+            for coordinate in coordinates {
+                let force = fabs(generalizedForces[coordinate]!)
+
+                switch coordinate {
+                case .x: scale1 = min(scale1, 10 / force)
+                case .y: scale1 = min(scale1, 10 / force)
+                case .angle: scale2 = min(scale2, CGAngle.degrees(10).radians / force)
+                case .progress: scale2 = min(scale2, 0.1 / force)
+                }
+            }
+
+            Swift.print("adjusting with scale =", scale1, scale2)
+
+            for index in coordinates.indices {
+                switch coordinates[index] {
+                case .x, .y:
+                    coordinates[index].rawValue += scale1 * generalizedForces[coordinates[index]]!
+                case .angle, .progress:
+                    coordinates[index].rawValue += scale2 * generalizedForces[coordinates[index]]!
+                }
+
+            }
+        }
+
+        let newConfiguration = MappedAccessConfiguration(for: configuration.paths, coordinates: coordinates)
+        self.committedConfiguration = newConfiguration
 
         let after = CACurrentMediaTime()
         let delta = after - before
 
+        Swift.print()
         Swift.print(String(format: "%#8.3fms", 1000 * delta))
     }
 
@@ -543,24 +708,24 @@ public class CanvasView: NSView {
     }
 
     @IBAction public func export(_ sender: Any) {
-        let window = self.window!
-        var title = window.title
-
-        for suffix in [".graphml", ".paths", ".arcs"] {
-            if let range = title.range(of: suffix), range.upperBound == title.endIndex {
-                title.removeSubrange(range)
-            }
-        }
-
-        let panel = NSSavePanel()
-        panel.nameFieldStringValue = title
-        panel.allowedFileTypes = ["svg"]
-
-        panel.beginSheetModal(for: window, completionHandler: {
-            if let url = panel.url, $0 != NSFileHandlingPanelCancelButton {
-                let data = self.drawing.svg(for: self.effectiveTransform)
-                try! data.write(to: url)
-            }
-        })
+//        let window = self.window!
+//        var title = window.title
+//
+//        for suffix in [".graphml", ".paths", ".arcs"] {
+//            if let range = title.range(of: suffix), range.upperBound == title.endIndex {
+//                title.removeSubrange(range)
+//            }
+//        }
+//
+//        let panel = NSSavePanel()
+//        panel.nameFieldStringValue = title
+//        panel.allowedFileTypes = ["svg"]
+//
+//        panel.beginSheetModal(for: window, completionHandler: {
+//            if let url = panel.url, $0 != NSFileHandlingPanelCancelButton {
+//                let data = self.drawing.svg(for: self.effectiveTransform)
+//                try! data.write(to: url)
+//            }
+//        })
     }
 }
