@@ -167,7 +167,7 @@ public class CanvasView: NSView {
     // MARK: - Rendering
 
     public override func draw(_ rect: CGRect) {
-        let context = NSGraphicsContext.current()!.cgContext
+        let context = NSGraphicsContext.current!.cgContext
 
         self.drawHUD(in: context)
 
@@ -236,7 +236,7 @@ public class CanvasView: NSView {
 
     private func draw(_ text: String, at position: CGPoint, in context: CGContext, alignment: NSTextAlignment) {
         let attributes = [
-            NSFontAttributeName: NSFont(name: "Courier", size: 16)!
+            NSAttributedStringKey.font: NSFont(name: "Courier", size: 16)!
         ]
 
         let string = NSAttributedString(string: text, attributes: attributes)
