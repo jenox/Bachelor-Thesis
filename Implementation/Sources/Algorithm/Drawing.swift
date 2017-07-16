@@ -17,6 +17,8 @@ public struct Drawing {
     // MARK: - Initialization
 
     public init(for configuration: MappedAccessConfiguration) {
+        var graph = Graph()
+        var paths: [Path] = []
         var locations: [Vertex: CGPoint] = [:]
         var lengths: [Edge: CGFloat] = [:]
         var arcs: [Path: CircularArc] = [:]
@@ -26,6 +28,8 @@ public struct Drawing {
         for (vertex, location) in configuration.locations {
             locations[vertex] = location
             directions[vertex] = []
+
+            graph.insert(vertex)
         }
 
         for path in configuration.paths {
@@ -49,6 +53,8 @@ public struct Drawing {
                     locations[head] = arc.point(for: progress)
                     directions[head] = [-direction, +direction]
 
+                    graph.insert(head)
+
                     delta = progress - last
                     last = progress
                 }
@@ -61,13 +67,19 @@ public struct Drawing {
                 }
 
                 lengths[edge] = fabs(delta) * length
+
+                graph.insert(edge)
             }
 
             directions[path.tail]!.append(+arc.derivative(for: 0))
             directions[path.head]!.append(-arc.derivative(for: 1))
             arcs[path] = arc
+
+            paths.append(path)
         }
 
+        self.graph = graph
+        self.paths = paths
         self.locations = locations
         self.lengths = lengths
         self.arcs = arcs
@@ -75,6 +87,12 @@ public struct Drawing {
         self.verticesAreOrderedCorrectly = verticesAreOrderedCorrectly
     }
 
+
+
+    // MARK: - Stored Properties
+
+    public let graph: Graph
+    public let paths: [Path]
     private let locations: [Vertex: CGPoint]
     private let lengths: [Edge: CGFloat]
     private let arcs: [Path: CircularArc]
@@ -83,19 +101,7 @@ public struct Drawing {
 
 
 
-    // MARK: - Geometric Entities
-
-    public var vertices: Set<Vertex> {
-        return Set(self.locations.keys)
-    }
-
-    public var edges: Set<Edge> {
-        return Set(self.lengths.keys)
-    }
-
-    public var paths: Set<Path> {
-        return Set(self.arcs.keys)
-    }
+    // MARK: - Positional Information
 
     public func location(of vertex: Vertex) -> CGPoint {
         return self.locations[vertex]!
@@ -109,13 +115,144 @@ public struct Drawing {
         return self.arcs[path]!
     }
 
-
-
-    // MARK: - Angular Resolution
-
     private func directions(at vertex: Vertex) -> [CGVector] {
         return self.directions[vertex]!
     }
+
+
+
+    // MARK: - Potential Energy
+
+    public var energy: Double {
+        guard self.verticesAreOrderedCorrectly else {
+            return .infinity
+        }
+
+        let vertices = Array(self.locations.keys)
+        let edges = Array(self.lengths.keys)
+        let paths = Array(self.paths)
+
+        var energy = 0 as CGFloat
+
+        for i in stride(from: 0, to: vertices.count, by: 1) {
+            for j in stride(from: i + 1, to: vertices.count, by: 1) {
+                let p = self.location(of: vertices[i])
+                let q = self.location(of: vertices[j])
+                let distance = p.distance(to: q)
+
+                energy += 2 * self.magnitudeOfRepulsiveEnergyBetweenVertexAndVertex(distance: distance)
+            }
+        }
+
+        for edge in edges {
+            let length = self.length(of: edge)
+
+            energy += self.magnitudeOfAttractiveEnergyForEdge(length: length, desired: 100)
+        }
+
+        for path in paths {
+            for vertex in vertices where !path.contains(vertex) {
+                let point = self.location(of: vertex)
+                let arc = self.arc(for: path)
+                let distance = arc.distance(to: point)
+
+                energy += self.magnitudeOfRepulsiveEnergyBetweenVertexAndPath(distance: distance)
+            }
+        }
+
+        assert(!energy.isNaN)
+
+        return Double(energy)
+    }
+
+    private func repulsion(between vertex: Vertex, and path: Path) -> Double {
+        precondition(!path.contains(vertex))
+
+        let point = self.location(of: vertex)
+        let arc = self.arc(for: path)
+        let distance = arc.distance(to: point)
+        let c3 = 10000 as CGFloat
+
+        return Double(c3 * 1 / distance)
+    }
+
+    private func magnitudeOfAttractiveEnergyForEdge(length: CGFloat, desired k: CGFloat) -> CGFloat {
+        return 100 * (length * (log(length / k) - 1) + k)
+    }
+
+    private func magnitudeOfRepulsiveEnergyBetweenVertexAndVertex(distance: CGFloat) -> CGFloat {
+        return 100000 / distance
+    }
+
+    private func magnitudeOfRepulsiveEnergyBetweenVertexAndPath(distance: CGFloat) -> CGFloat {
+        return 10000 / distance
+    }
+
+
+
+    // MARK: - Forces
+
+    public func force(actingOn vertex: Vertex) -> CGVector {
+        guard self.verticesAreOrderedCorrectly else {
+            fatalError("Force acting on vertex is undefined when ordered incorrectly.")
+        }
+
+        var force = CGVector.zero
+
+        for other in self.graph.vertices where other !== vertex {
+            let p = self.location(of: vertex)
+            let q = self.location(of: other)
+
+            let distance = CGVector(from: p, to: q).length
+            let direction = -CGVector(from: p, to: q).normalized
+            let scale = self.magnitudeOfRepulsiveForceBetweenVertexAndVertex(distance: distance)
+
+            force += scale * direction
+        }
+
+        for edge in self.graph.edges(incidentTo: vertex) where !edge.isLoop {
+            let p = self.location(of: vertex)
+            let q = self.location(of: edge.head(from: vertex))
+
+            let length = self.length(of: edge)
+            let direction = -CGVector(from: p, to: q).normalized
+            let scale = self.magnitudeOfAttractiveForceAlongEdge(length: length, desired: 100)
+
+            force += scale * direction
+        }
+
+        for path in self.paths where !path.contains(vertex) {
+            let point = self.location(of: vertex)
+            let arc = self.arc(for: path)
+
+            let progress = arc.progress(for: point)
+            let closest = arc.point(for: progress)
+
+            let distance = CGVector(from: closest, to: point).length
+            let direction = CGVector(from: closest, to: point).normalized
+            let scale = self.magnitudeOfRepulsiveForceBetweenVertexAndPath(distance: distance)
+
+            force += scale * direction
+        }
+
+        return force
+    }
+
+    private func magnitudeOfAttractiveForceAlongEdge(length: CGFloat, desired k: CGFloat) -> CGFloat {
+        return 100 * -log(length / k)
+    }
+
+    private func magnitudeOfRepulsiveForceBetweenVertexAndVertex(distance: CGFloat) -> CGFloat {
+        return 100000 / pow(distance, 2)
+    }
+
+    private func magnitudeOfRepulsiveForceBetweenVertexAndPath(distance: CGFloat) -> CGFloat {
+        return 10000 / pow(distance, 2)
+    }
+
+
+
+    // MARK: - Angular Resolution
 
     private func angles(at vertex: Vertex) -> [CGAngle] {
         let directions = self.directions(at: vertex).sorted(by: { $0.slope < $1.slope })
@@ -164,80 +301,10 @@ public struct Drawing {
     }
 
     public var lombardiness: Double {
-        let reciprocals = self.vertices.map({ 1 / self.lombardiness(at: $0) })
+        let reciprocals = self.graph.vertices.map({ 1 / self.lombardiness(at: $0) })
         let lombardiness = 1 / reciprocals.average
 
         return fmin(fmax(lombardiness, 0), 1)
-    }
-
-
-
-    // MARK: - Potential Energy
-
-    public var energy: Double {
-        guard self.verticesAreOrderedCorrectly else {
-            return .infinity
-        }
-
-        let vertices = Array(self.locations.keys)
-        let edges = Array(self.lengths.keys)
-        let paths = Array(self.paths)
-
-        var energy = 0.0
-
-        for i in stride(from: 0, to: vertices.count, by: 1) {
-            for j in stride(from: i + 1, to: vertices.count, by: 1) {
-                energy += self.repulsion(between: vertices[i], and: vertices[j])
-            }
-        }
-
-        for edge in edges {
-            energy += self.attraction(along: edge)
-        }
-
-        for path in paths {
-            for vertex in vertices where !path.contains(vertex) {
-                energy += self.repulsion(between: vertex, and: path)
-            }
-        }
-
-        // Exponent \in [0...inf) = importance of Lombardiness
-        energy *= 1 / pow(self.lombardiness, 1)
-
-        assert(!energy.isNaN)
-
-        return energy
-    }
-
-    private func repulsion(between u: Vertex, and v: Vertex) -> Double {
-        precondition(u != v)
-
-        let p = self.location(of: u)
-        let q = self.location(of: v)
-        let distance = p.distance(to: q)
-        let c1 = 100000 as CGFloat
-
-        return Double(c1 * 1 / distance)
-    }
-
-    private func attraction(along edge: Edge) -> Double {
-        let length = self.length(of: edge)
-
-        let k = 100 as CGFloat
-        let c2 = 1 as CGFloat
-
-        return Double(c2 * k * (length * log(length / k) - 1) + k * k)
-    }
-
-    private func repulsion(between vertex: Vertex, and path: Path) -> Double {
-        precondition(!path.contains(vertex))
-
-        let point = self.location(of: vertex)
-        let arc = self.arc(for: path)
-        let distance = arc.distance(to: point)
-        let c3 = 10000 as CGFloat
-
-        return Double(c3 * 1 / distance)
     }
 
 
@@ -303,6 +370,7 @@ public struct Drawing {
 
 
 
+// MARK: - Helpers
 
 extension Array where Element: FloatingPoint {
     public var average: Element {

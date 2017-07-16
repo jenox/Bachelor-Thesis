@@ -11,13 +11,22 @@ import Foundation
 
 
 public protocol Optimizer: class {
-    var configuration: MappedAccessConfiguration { get }
-    var drawing: Drawing { get }
+    init(from configuration: MappedAccessConfiguration)
 
-    @discardableResult
-    func step() -> Double
+    var configuration: MappedAccessConfiguration { get }
+
+    func step()
 
     func undo()
     func redo()
     func removeAllActions()
+}
+
+extension Optimizer {
+    public init(for paths: GreedilyRealizableSequenceOfPaths) {
+        let builder = RandomizedConfigurationBuilder(for: paths)
+        let configuration = builder.configuration
+
+        self.init(from: configuration)
+    }
 }

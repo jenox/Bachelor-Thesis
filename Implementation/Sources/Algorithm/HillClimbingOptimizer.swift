@@ -6,7 +6,7 @@ import Foundation
  *
  * - Author: christian.schnorr@me.com
  */
-public final class ConcreteHillClimber: Optimizer {
+public final class HillClimbingOptimizer: Optimizer {
     public typealias Graph = UndirectedGraph
     public typealias Vertex = Graph.Vertex
     public typealias Edge = Graph.Edge
@@ -24,13 +24,6 @@ public final class ConcreteHillClimber: Optimizer {
         self.climber = GenericHillClimber(from: configuration, mode: .minimize)
     }
 
-    public convenience init(for paths: GreedilyRealizableSequenceOfPaths) {
-        let builder = RandomizedConfigurationBuilder(for: paths)
-        let configuration = builder.configuration
-
-        self.init(from: configuration)
-    }
-
 
 
     // MARK: - Properties
@@ -41,10 +34,6 @@ public final class ConcreteHillClimber: Optimizer {
         return self.climber.configuration.mapped
     }
 
-    public var drawing: Drawing {
-        return Drawing(for: self.configuration)
-    }
-
 
 
     // MARK: - Hill Climbing
@@ -53,9 +42,8 @@ public final class ConcreteHillClimber: Optimizer {
         return self.climber.numberOfDimensions
     }
 
-    @discardableResult
-    public func step() -> Double {
-        return self.climber.climb()
+    public func step() {
+        self.climber.climb()
     }
 
 

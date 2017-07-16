@@ -17,11 +17,10 @@ public final class DerivativeBasedOptimizer: Optimizer {
 
     public init(from configuration: MappedAccessConfiguration) {
         let drawing = Drawing(for: configuration)
-        let configuration = VectorAccessConfiguration(for: configuration)
-
-        self.raw = configuration
 
         precondition(drawing.energy.isFinite)
+
+        self.configuration = configuration
     }
 
     public convenience init(for paths: GreedilyRealizableSequenceOfPaths) {
@@ -35,52 +34,187 @@ public final class DerivativeBasedOptimizer: Optimizer {
 
     // MARK: - Properties
 
-    private var raw: VectorAccessConfiguration
-
-    public var configuration: MappedAccessConfiguration {
-        return self.raw.mapped
+    private(set) public var configuration: MappedAccessConfiguration {
+        didSet {
+            self.undoManager.registerUndo(withTarget: self, handler: {
+                $0.configuration = oldValue
+            })
+        }
     }
 
-    public var drawing: Drawing {
-        return Drawing(for: self.configuration)
+
+
+    // MARK: - Stepping
+
+    private func internalVertexToPathMap(in drawing: Drawing) -> [Vertex: Path] {
+        var paths: [Vertex: Path] = [:]
+
+        for path in drawing.paths {
+            for vertex in path.internalVertices {
+                paths[vertex] = path
+            }
+        }
+
+        return paths
     }
 
+    private func forces(in drawing: Drawing) -> [Vertex: CGVector] {
+        var forces: [Vertex: CGVector] = [:]
 
-    // MARK: - Hill Climbing
+        for vertex in drawing.graph.vertices {
+            forces[vertex] = drawing.force(actingOn: vertex)
+        }
 
-    public var numberOfDimensions: Int {
-        return self.raw.count
+        return forces
     }
 
-    private func derivative(of c0: VectorAccessConfiguration, at index: Int, dx: Double) -> Double {
-        var c1 = c0
-        c1[index] += dx
+    public func step() {
+        let configuration = self.configuration
+        let drawing = Drawing(for: configuration)
 
-        let y0 = Drawing(for: c0.mapped).energy
-        let y1 = Drawing(for: c1.mapped).energy
+        let paths = self.internalVertexToPathMap(in: drawing)
+        let traditionalForces = self.forces(in: drawing)
 
-        return (y1 - y0) / dx
-    }
+        // Generalized coordinates q_j and forces Q_j
+        var coordinates = VectorAccessConfiguration(for: configuration).coordinates
+        var forces: [GeneralizedCoordinate: CGFloat] = [:]
 
-    @discardableResult
-    public func step() -> Double {
-        let oldValue = self.raw
-        var newValue = oldValue
+        for coordinate in coordinates {
+            var force = 0 as CGFloat
 
-        let count = oldValue.count
-        var gradient = Array(repeating: 0 as Double, count: count)
+            switch coordinate {
+            case .x(let vertex, _):
+                for other in drawing.graph.vertices {
+                    let drdq: CGVector
 
-        for index in 0..<count {
-            gradient[index] = self.derivative(of: oldValue, at: index, dx: 0.0001)
-            newValue[index] -= 0.001 * gradient[index]
+                    if other === vertex {
+                        drdq = CGVector(dx: 1, dy: 0)
+                    }
+                    else if let path = paths[other] {
+                        let arc = drawing.arc(for: path)
+                        let progress = configuration.progresses[other]!
+
+                        if vertex === path.vertices.first {
+                            drdq = arc.derivativeWithRespectToStartX(at: progress)
+                        }
+                        else if vertex === path.vertices.last {
+                            drdq = arc.derivativeWithRespectToEndX(at: progress)
+                        }
+                        else {
+                            drdq = .zero
+                        }
+                    }
+                    else {
+                        drdq = .zero
+                    }
+
+                    force += traditionalForces[other]! * drdq
+                }
+            case .y(let vertex, _):
+                for other in drawing.graph.vertices {
+                    let drdq: CGVector
+
+                    if other === vertex {
+                        drdq = CGVector(dx: 0, dy: 1)
+                    }
+                    else if let path = paths[other] {
+                        let arc = drawing.arc(for: path)
+                        let progress = configuration.progresses[other]!
+
+                        if vertex === path.vertices.first {
+                            drdq = arc.derivativeWithRespectToStartY(at: progress)
+                        }
+                        else if vertex === path.vertices.last {
+                            drdq = arc.derivativeWithRespectToEndY(at: progress)
+                        }
+                        else {
+                            drdq = .zero
+                        }
+                    }
+                    else {
+                        drdq = .zero
+                    }
+
+                    force += traditionalForces[other]! * drdq
+                }
+            case .progress(let vertex, _):
+                let path = paths[vertex]!
+                let arc = drawing.arc(for: path)
+                let progress = configuration.progresses[vertex]!
+                let drdq = arc.derivativeWithRespectToProgress(at: progress)
+
+                force += traditionalForces[vertex]! * drdq
+            case .angle(let path, _):
+                for other in drawing.graph.vertices {
+                    let drdq: CGVector
+
+                    if path.internalVertices.contains(other) {
+                        let arc = drawing.arc(for: path)
+                        let progress = configuration.progresses[other]!
+
+                        drdq = arc.derivativeWithRespectToAngle(at: progress)
+                    }
+                    else {
+                        drdq = .zero
+                    }
+
+                    force += traditionalForces[other]! * drdq
+                }
+            }
+
+            forces[coordinate] = force
+        }
+
+        print()
+        print("TRADITIONAL FORCES")
+        print("==================")
+
+        for (vertex, force) in traditionalForces {
+            print("\(vertex):", force)
+        }
+
+        print()
+        print("GENERALIZED FORCES")
+        print("==================")
+
+        for (coordinate, force) in forces {
+            print("\(coordinate):", force)
+        }
+
+        do {
+            var scale1 = 1 as CGFloat
+            var scale2 = 1 as CGFloat
+
+            for coordinate in coordinates {
+                let force = fabs(forces[coordinate]!)
+
+                switch coordinate {
+                case .x: scale1 = min(scale1, 10 / force)
+                case .y: scale1 = min(scale1, 10 / force)
+                case .angle: scale2 = min(scale2, CGAngle.degrees(10).radians / force)
+                case .progress: scale2 = min(scale2, 0.1 / force)
+                }
+            }
+
+            print("adjusting with scales (\(scale1), \(scale2))")
+
+            for index in coordinates.indices {
+                switch coordinates[index] {
+                case .x, .y:
+                    coordinates[index].rawValue += scale1 * forces[coordinates[index]]!
+                case .angle, .progress:
+                    coordinates[index].rawValue += scale2 * forces[coordinates[index]]!
+                }
+
+            }
         }
 
         do {
             self.undoManager.beginUndoGrouping()
-            self.raw = newValue
+
+            self.configuration = MappedAccessConfiguration(for: configuration.paths, coordinates: coordinates)
+
             self.undoManager.endUndoGrouping()
-            
-            return 0
         }
     }
 

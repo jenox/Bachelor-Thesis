@@ -40,7 +40,7 @@ where ${d(u, v)}$ is the Euclidean distance of the vertices ${u}$ and ${v}$'s po
 In order to keep adjacent vertices close together, we think of every edge as a virtual spring attempting to restore its relaxed length ${k}$. Linear springs based on Hooke's law have shown to be too strong when adjacent vertices are far away from each other. Therefore we shall use springs whose restoring forces ${F_\text{att}}$ are instead logarithmic in their relative displacement:
 %
 \begin{equation*}
-  F_\text{att}(l) \coloneqq -c_2 \cdot k \cdot \eval{\ln}{\frac{l}{k}}
+  F_\text{att}(l) \coloneqq -c_2 \cdot \eval{\ln}{\frac{l}{k}}
 \end{equation*}
 %
 The elastic potential energy stored in such a spring can be written as
@@ -48,7 +48,7 @@ The elastic potential energy stored in such a spring can be written as
 \begin{align*}
   U_\text{att}(e) \coloneqq{}& \int\limits_{k}^{\mathclap{l(\Gamma_e)}} -F_\text{att}(s) \differential{s}
   \\
-  ={}& c_2 \cdot kl \cdot \left( \eval{\ln}{\frac{l}{k}} - 1 \right) + k^2,
+  ={}& c_2 \cdot \left( l(\Gamma_e) \cdot \left( \eval{\ln}{\frac{l(\Gamma_e)}{k}} - 1 \right) + k \right),
 \end{align*}
 %
 where ${\Gamma_e}$ is the circular arc used to draw the edge ${e}$, and ${l(\Gamma_e)}$ is its arc length.
