@@ -541,24 +541,24 @@ public class CanvasView: NSView {
     }
 
     @IBAction public func export(_ sender: Any) {
-//        let window = self.window!
-//        var title = window.title
-//
-//        for suffix in [".graphml", ".paths", ".arcs"] {
-//            if let range = title.range(of: suffix), range.upperBound == title.endIndex {
-//                title.removeSubrange(range)
-//            }
-//        }
-//
-//        let panel = NSSavePanel()
-//        panel.nameFieldStringValue = title
-//        panel.allowedFileTypes = ["svg"]
-//
-//        panel.beginSheetModal(for: window, completionHandler: {
-//            if let url = panel.url, $0 != NSFileHandlingPanelCancelButton {
-//                let data = self.drawing.svg(for: self.effectiveTransform)
-//                try! data.write(to: url)
-//            }
-//        })
+        let window = self.window!
+        var title = window.title
+
+        for suffix in [".graphml", ".paths", ".arcs"] {
+            if let range = title.range(of: suffix), range.upperBound == title.endIndex {
+                title.removeSubrange(range)
+            }
+        }
+
+        let panel = NSSavePanel()
+        panel.nameFieldStringValue = title
+        panel.allowedFileTypes = ["svg"]
+
+        panel.beginSheetModal(for: window, completionHandler: {
+            if let url = panel.url, $0 != NSApplication.ModalResponse.cancel {
+                let data = self.drawing.svg(for: self.effectiveTransform)
+                try! data.write(to: url)
+            }
+        })
     }
 }

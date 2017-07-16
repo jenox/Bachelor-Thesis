@@ -58,7 +58,7 @@ public final class DerivativeBasedOptimizer: Optimizer {
         return paths
     }
 
-    private func forces(in drawing: Drawing) -> [Vertex: CGVector] {
+    private func traditionalForces(in drawing: Drawing) -> [Vertex: CGVector] {
         var forces: [Vertex: CGVector] = [:]
 
         for vertex in drawing.graph.vertices {
@@ -68,15 +68,10 @@ public final class DerivativeBasedOptimizer: Optimizer {
         return forces
     }
 
-    public func step() {
-        let configuration = self.configuration
-        let drawing = Drawing(for: configuration)
-
+    private func generalizedForces(for coordinates: [GeneralizedCoordinate], in drawing: Drawing) -> [GeneralizedCoordinate: CGFloat] {
         let paths = self.internalVertexToPathMap(in: drawing)
-        let traditionalForces = self.forces(in: drawing)
+        let traditionalForces = self.traditionalForces(in: drawing)
 
-        // Generalized coordinates q_j and forces Q_j
-        var coordinates = VectorAccessConfiguration(for: configuration).coordinates
         var forces: [GeneralizedCoordinate: CGFloat] = [:]
 
         for coordinate in coordinates {
@@ -165,55 +160,79 @@ public final class DerivativeBasedOptimizer: Optimizer {
             forces[coordinate] = force
         }
 
+        return forces
+    }
+
+    public func step() {
+        let configuration = self.configuration
+        let drawing = Drawing(for: configuration)
+        let paths = self.configuration.paths
+
+        let coordinates = VectorAccessConfiguration(for: configuration).coordinates
+
+        let traditionalForces = self.traditionalForces(in: drawing)
+        let generalizedForces = self.generalizedForces(for: coordinates, in: drawing)
+
         print()
         print("TRADITIONAL FORCES")
         print("==================")
-
-        for (vertex, force) in traditionalForces {
-            print("\(vertex):", force)
-        }
+        print(traditionalForces.map({ "\($0.key): \($0.value)" }).sorted().joined(separator: "\n"))
 
         print()
         print("GENERALIZED FORCES")
         print("==================")
+        print(generalizedForces.map({ "\($0.key): \($0.value)" }).sorted().joined(separator: "\n"))
 
-        for (coordinate, force) in forces {
-            print("\(coordinate):", force)
-        }
+        var positionalScale: CGFloat = 1
+        var angularScale: CGFloat = 1
+        var progressScale: CGFloat = 1
 
         do {
-            var scale1 = 1 as CGFloat
-            var scale2 = 1 as CGFloat
-
             for coordinate in coordinates {
-                let force = fabs(forces[coordinate]!)
+                let magnitude = fabs(generalizedForces[coordinate]!)
 
                 switch coordinate {
-                case .x: scale1 = min(scale1, 10 / force)
-                case .y: scale1 = min(scale1, 10 / force)
-                case .angle: scale2 = min(scale2, CGAngle.degrees(10).radians / force)
-                case .progress: scale2 = min(scale2, 0.1 / force)
+                case .x: positionalScale = min(positionalScale, 10 / magnitude)
+                case .y: positionalScale = min(positionalScale, 10 / magnitude)
+                case .angle: angularScale = min(angularScale, CGAngle.degrees(10).radians / magnitude)
+                case .progress: progressScale = min(progressScale, 0.1 / magnitude)
                 }
-            }
-
-            print("adjusting with scales (\(scale1), \(scale2))")
-
-            for index in coordinates.indices {
-                switch coordinates[index] {
-                case .x, .y:
-                    coordinates[index].rawValue += scale1 * forces[coordinates[index]]!
-                case .angle, .progress:
-                    coordinates[index].rawValue += scale2 * forces[coordinates[index]]!
-                }
-
             }
         }
 
         do {
+            var scale = 1 as CGFloat
+
+            let adjustedCoordinates = {
+                return coordinates.map({ coordinate -> GeneralizedCoordinate in
+                    let force = generalizedForces[coordinate]!
+                    var copy = coordinate
+
+                    switch copy {
+                    case .x, .y:
+                        copy.rawValue += scale * positionalScale * force
+                    case .angle:
+                        copy.rawValue += scale * angularScale * force
+                    case .progress:
+                        copy.rawValue += scale * progressScale * force
+                    }
+
+                    return copy
+                })
+            }
+
+            var newConfiguration = MappedAccessConfiguration(for: paths, coordinates: adjustedCoordinates())
+            var newDrawing = Drawing(for: newConfiguration)
+
+            while !newDrawing.energy.isFinite {
+                scale *= 0.5
+
+                newConfiguration = MappedAccessConfiguration(for: paths, coordinates: adjustedCoordinates())
+                newDrawing = Drawing(for: newConfiguration)
+            }
+
             self.undoManager.beginUndoGrouping()
-
-            self.configuration = MappedAccessConfiguration(for: configuration.paths, coordinates: coordinates)
-
+            self.configuration = newConfiguration
             self.undoManager.endUndoGrouping()
         }
     }
