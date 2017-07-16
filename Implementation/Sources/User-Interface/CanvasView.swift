@@ -174,6 +174,7 @@ public class CanvasView: NSView {
         context.concatenate(self.effectiveTransform)
 
         self.drawGraph(in: context)
+        self.drawForces(in: context)
     }
 
     private func drawGraph(in context: CGContext) {
@@ -199,13 +200,6 @@ public class CanvasView: NSView {
             do {
                 let rect = CGRect(center: location, size: CGSize(width: 8, height: 8))
 
-                do {
-                    var point = location
-                    point.x += 5
-                    point.y += 2
-                    self.draw(vertex.name, at: point, in: context, alignment: .left)
-                }
-
                 context.saveGState()
                 context.beginPath()
                 context.addEllipse(in: rect)
@@ -213,6 +207,38 @@ public class CanvasView: NSView {
                 context.fillPath()
                 context.restoreGState()
             }
+
+            do {
+                var point = location
+                point.x += 5
+                point.y += 2
+
+                self.draw(vertex.name, at: point, in: context, alignment: .left)
+            }
+        }
+    }
+
+    private func drawForces(in context: CGContext) {
+        for vertex in self.drawing.graph.vertices {
+            let location = self.drawing.location(of: vertex)
+            let force = self.drawing.force(actingOn: vertex)
+
+            let a = location
+            let b = (a.position + force).pointee
+            let c = (b.position + force.rotated(by: .degrees(+135)).with(length: fmin(5, force.length))).pointee
+            let d = (b.position + force.rotated(by: .degrees(-135)).with(length: fmin(5, force.length))).pointee
+
+            context.saveGState()
+            context.beginPath()
+            context.move(to: a)
+            context.addLine(to: b)
+            context.move(to: c)
+            context.addLine(to: b)
+            context.addLine(to: d)
+            context.setStrokeColor(NSColor.red.cgColor)
+            context.setLineWidth(2)
+            context.strokePath()
+            context.restoreGState()
         }
     }
 

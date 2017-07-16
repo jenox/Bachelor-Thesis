@@ -42,9 +42,17 @@ public final class DerivativeBasedOptimizer: Optimizer {
         }
     }
 
+    private var temperature: CGFloat = 1.0 {
+        didSet {
+            self.undoManager.registerUndo(withTarget: self, handler: {
+                $0.temperature = oldValue
+            })
+        }
+    }
 
 
-    // MARK: - Stepping
+
+    // MARK: - Helpers
 
     private func internalVertexToPathMap(in drawing: Drawing) -> [Vertex: Path] {
         var paths: [Vertex: Path] = [:]
@@ -163,13 +171,16 @@ public final class DerivativeBasedOptimizer: Optimizer {
         return forces
     }
 
+
+
+    // MARK: - Stepping
+
     public func step() {
         let configuration = self.configuration
         let drawing = Drawing(for: configuration)
         let paths = self.configuration.paths
 
         let coordinates = VectorAccessConfiguration(for: configuration).coordinates
-
         let traditionalForces = self.traditionalForces(in: drawing)
         let generalizedForces = self.generalizedForces(for: coordinates, in: drawing)
 
@@ -181,7 +192,7 @@ public final class DerivativeBasedOptimizer: Optimizer {
         print()
         print("GENERALIZED FORCES")
         print("==================")
-        print(generalizedForces.map({ "\($0.key): \($0.value)" }).sorted().joined(separator: "\n"))
+        print(generalizedForces.map({ "\($0.key)  =>  \($0.value)" }).sorted().joined(separator: "\n"))
 
         var positionalScale: CGFloat = 1
         var angularScale: CGFloat = 1
@@ -201,7 +212,7 @@ public final class DerivativeBasedOptimizer: Optimizer {
         }
 
         do {
-            var scale = 1 as CGFloat
+            var scale = self.temperature
 
             let adjustedCoordinates = {
                 return coordinates.map({ coordinate -> GeneralizedCoordinate in
@@ -231,8 +242,11 @@ public final class DerivativeBasedOptimizer: Optimizer {
                 newDrawing = Drawing(for: newConfiguration)
             }
 
+            print("Scaled with:", scale, positionalScale, angularScale, progressScale)
+
             self.undoManager.beginUndoGrouping()
             self.configuration = newConfiguration
+            self.temperature *= 0.9
             self.undoManager.endUndoGrouping()
         }
     }
