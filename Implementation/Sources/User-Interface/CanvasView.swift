@@ -133,6 +133,8 @@ public class CanvasView: NSView {
 
     // MARK: - Optimization
 
+//    private let optimizerType: Optimizer.Type = HillClimbingOptimizer.self
+//    private let optimizerType: Optimizer.Type = ForceDirectedOptimizer.self
     private let optimizerType: Optimizer.Type = DerivativeBasedOptimizer.self
 
     fileprivate var optimizer: Optimizer {
@@ -527,7 +529,7 @@ public class CanvasView: NSView {
 
         self.step()
 
-        let deadline = DispatchTime.now() + DispatchTimeInterval.milliseconds(100)
+        let deadline = DispatchTime.now() + DispatchTimeInterval.milliseconds(400)
         DispatchQueue.main.asyncAfter(deadline: deadline, execute: {
             self.stepContinuouslyIfRightMouseDown()
         })

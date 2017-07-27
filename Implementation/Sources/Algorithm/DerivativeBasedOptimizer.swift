@@ -23,13 +23,6 @@ public final class DerivativeBasedOptimizer: Optimizer {
         self.configuration = configuration
     }
 
-    public convenience init(for paths: GreedilyRealizableSequenceOfPaths) {
-        let builder = RandomizedConfigurationBuilder(for: paths)
-        let configuration = builder.configuration
-
-        self.init(from: configuration)
-    }
-
 
 
     // MARK: - Properties
@@ -52,147 +45,18 @@ public final class DerivativeBasedOptimizer: Optimizer {
 
 
 
-    // MARK: - Helpers
-
-    private func internalVertexToPathMap(in drawing: Drawing) -> [Vertex: Path] {
-        var paths: [Vertex: Path] = [:]
-
-        for path in drawing.paths {
-            for vertex in path.internalVertices {
-                paths[vertex] = path
-            }
-        }
-
-        return paths
-    }
-
-    private func traditionalForces(in drawing: Drawing) -> [Vertex: CGVector] {
-        var forces: [Vertex: CGVector] = [:]
-
-        for vertex in drawing.graph.vertices {
-            forces[vertex] = drawing.force(actingOn: vertex)
-        }
-
-        return forces
-    }
-
-    private func generalizedForces(for coordinates: [GeneralizedCoordinate], in drawing: Drawing) -> [GeneralizedCoordinate: CGFloat] {
-        let paths = self.internalVertexToPathMap(in: drawing)
-        let traditionalForces = self.traditionalForces(in: drawing)
-
-        var forces: [GeneralizedCoordinate: CGFloat] = [:]
-
-        for coordinate in coordinates {
-            var force = 0 as CGFloat
-
-            switch coordinate {
-            case .x(let vertex, _):
-                for other in drawing.graph.vertices {
-                    let drdq: CGVector
-
-                    if other === vertex {
-                        drdq = CGVector(dx: 1, dy: 0)
-                    }
-                    else if let path = paths[other] {
-                        let arc = drawing.arc(for: path)
-                        let progress = configuration.progresses[other]!
-
-                        if vertex === path.vertices.first {
-                            drdq = arc.derivativeWithRespectToStartX(at: progress)
-                        }
-                        else if vertex === path.vertices.last {
-                            drdq = arc.derivativeWithRespectToEndX(at: progress)
-                        }
-                        else {
-                            drdq = .zero
-                        }
-                    }
-                    else {
-                        drdq = .zero
-                    }
-
-                    force += traditionalForces[other]! * drdq
-                }
-            case .y(let vertex, _):
-                for other in drawing.graph.vertices {
-                    let drdq: CGVector
-
-                    if other === vertex {
-                        drdq = CGVector(dx: 0, dy: 1)
-                    }
-                    else if let path = paths[other] {
-                        let arc = drawing.arc(for: path)
-                        let progress = configuration.progresses[other]!
-
-                        if vertex === path.vertices.first {
-                            drdq = arc.derivativeWithRespectToStartY(at: progress)
-                        }
-                        else if vertex === path.vertices.last {
-                            drdq = arc.derivativeWithRespectToEndY(at: progress)
-                        }
-                        else {
-                            drdq = .zero
-                        }
-                    }
-                    else {
-                        drdq = .zero
-                    }
-
-                    force += traditionalForces[other]! * drdq
-                }
-            case .progress(let vertex, _):
-                let path = paths[vertex]!
-                let arc = drawing.arc(for: path)
-                let progress = configuration.progresses[vertex]!
-                let drdq = arc.derivativeWithRespectToProgress(at: progress)
-
-                force += traditionalForces[vertex]! * drdq
-            case .angle(let path, _):
-                for other in drawing.graph.vertices {
-                    let drdq: CGVector
-
-                    if path.internalVertices.contains(other) {
-                        let arc = drawing.arc(for: path)
-                        let progress = configuration.progresses[other]!
-
-                        drdq = arc.derivativeWithRespectToAngle(at: progress)
-                    }
-                    else {
-                        drdq = .zero
-                    }
-
-                    force += traditionalForces[other]! * drdq
-                }
-            }
-
-            forces[coordinate] = force
-        }
-
-        return forces
-    }
-
-
-
-    // MARK: - Stepping
+    // MARK: - Hill Climbing
 
     public func step() {
-        let configuration = self.configuration
-        let drawing = Drawing(for: configuration)
         let paths = self.configuration.paths
+        let coordinates = VectorAccessConfiguration(for: self.configuration).coordinates
 
-        let coordinates = VectorAccessConfiguration(for: configuration).coordinates
-        let traditionalForces = self.traditionalForces(in: drawing)
-        let generalizedForces = self.generalizedForces(for: coordinates, in: drawing)
+        let generalizedForces = self.generalizedForces
 
-        print()
-        print("TRADITIONAL FORCES")
-        print("==================")
-        print(traditionalForces.map({ "\($0.key): \($0.value)" }).sorted().joined(separator: "\n"))
-
-        print()
-        print("GENERALIZED FORCES")
-        print("==================")
-        print(generalizedForces.map({ "\($0.key)  =>  \($0.value)" }).sorted().joined(separator: "\n"))
+//        print()
+//        print("GENERALIZED FORCES")
+//        print("==================")
+//        print(generalizedForces.map({ "\($0.key)  =>  \($0.value)" }).sorted().joined(separator: "\n"))
 
         var positionalScale: CGFloat = 1
         var angularScale: CGFloat = 1
@@ -221,11 +85,11 @@ public final class DerivativeBasedOptimizer: Optimizer {
 
                     switch copy {
                     case .x, .y:
-                        copy.rawValue += scale * positionalScale * force
+                        copy.value += Double(scale * positionalScale * force)
                     case .angle:
-                        copy.rawValue += scale * angularScale * force
+                        copy.value += Double(scale * angularScale * force)
                     case .progress:
-                        copy.rawValue += scale * progressScale * force
+                        copy.value += Double(scale * progressScale * force)
                     }
 
                     return copy
@@ -242,13 +106,36 @@ public final class DerivativeBasedOptimizer: Optimizer {
                 newDrawing = Drawing(for: newConfiguration)
             }
 
-            print("Scaled with:", scale, positionalScale, angularScale, progressScale)
+//            print("Scaled with:", scale, positionalScale, angularScale, progressScale)
 
             self.undoManager.beginUndoGrouping()
             self.configuration = newConfiguration
             self.temperature *= 0.9
             self.undoManager.endUndoGrouping()
         }
+    }
+
+    internal var generalizedForces: [GeneralizedCoordinate: CGFloat] {
+        let paths = self.configuration.paths
+        let coordinates = VectorAccessConfiguration(for: self.configuration).coordinates
+
+        let oldConfiguration = MappedAccessConfiguration(for: paths, coordinates: coordinates)
+        let oldEnergy = Drawing(for: oldConfiguration).energy
+
+        let step = 1e-8 as CGFloat
+        var derivatives: [GeneralizedCoordinate: CGFloat] = [:]
+
+        for (index, coordinate) in coordinates.enumerated() {
+            var newCoordinates = coordinates
+            newCoordinates[index].value += Double(step)
+
+            let newConfiguration = MappedAccessConfiguration(for: paths, coordinates: newCoordinates)
+            let newEnergy = Drawing(for: newConfiguration).energy
+
+            derivatives[coordinate] = -CGFloat(newEnergy - oldEnergy) / step
+        }
+
+        return derivatives
     }
 
 

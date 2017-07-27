@@ -211,12 +211,25 @@ public struct Drawing {
         }
 
         for edge in self.graph.edges(incidentTo: vertex) where !edge.isLoop {
-            let p = self.location(of: vertex)
-            let q = self.location(of: edge.head(from: vertex))
+            let point1 = self.location(of: vertex)
+            let point2 = self.location(of: edge.head(from: vertex))
+
+            let path = self.paths.first(where: { $0.contains(edge) })!
+            let arc = self.arcs[path]!
+
+            let progress1 = arc.progress(for: point1)
+            let progress2 = arc.progress(for: point2)
 
             let length = self.length(of: edge)
-            let direction = -CGVector(from: p, to: q).normalized
+            let direction: CGVector
             let scale = self.magnitudeOfAttractiveForceAlongEdge(length: length, desired: 100)
+
+            if progress1 > progress2 {
+                direction = +arc.derivative(for: progress1).normalized
+            }
+            else {
+                direction = -arc.derivative(for: progress1).normalized
+            }
 
             force += scale * direction
         }

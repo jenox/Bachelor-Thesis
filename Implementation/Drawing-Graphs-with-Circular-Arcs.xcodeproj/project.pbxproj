@@ -41,11 +41,12 @@
 		CB361E3F1E6C97F000BCA82C /* ValidConfigurationBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB361E371E6C97F000BCA82C /* ValidConfigurationBuilder.swift */; };
 		CB361E401E6C97F000BCA82C /* VectorAccessConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB361E381E6C97F000BCA82C /* VectorAccessConfiguration.swift */; };
 		CB361E411E6C97F000BCA82C /* GeneralizedCoordinate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB361E391E6C97F000BCA82C /* GeneralizedCoordinate.swift */; };
-		CB6CB9CB1ECE152B00D30A68 /* DerivativeBasedOptimizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB6CB9CA1ECE152B00D30A68 /* DerivativeBasedOptimizer.swift */; };
+		CB6CB9CB1ECE152B00D30A68 /* ForceDirectedOptimizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB6CB9CA1ECE152B00D30A68 /* ForceDirectedOptimizer.swift */; };
 		CB6CB9CD1ECE16AB00D30A68 /* Optimizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB6CB9CC1ECE16AB00D30A68 /* Optimizer.swift */; };
 		CBA2E9151E6F23F100A02550 /* Document+Graph.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBA2E9141E6F23F100A02550 /* Document+Graph.swift */; };
 		CBA2E9171E6F23F900A02550 /* Document+Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBA2E9161E6F23F900A02550 /* Document+Configuration.swift */; };
 		CBA2E9191E6F240000A02550 /* Document+Paths.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBA2E9181E6F240000A02550 /* Document+Paths.swift */; };
+		CBA9B0DB1F27659700058DAF /* DerivativeBasedOptimizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBA9B0DA1F27659700058DAF /* DerivativeBasedOptimizer.swift */; };
 		CBEE685B1E8DC2CD0014148E /* CanvasViewUndoDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBEE685A1E8DC2CD0014148E /* CanvasViewUndoDelegate.swift */; };
 		CBF01A901F1280EF00FF26AF /* CircularArc+Derivatives.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBF01A8F1F1280EF00FF26AF /* CircularArc+Derivatives.swift */; };
 		CBF0E5671E6C9C120017B002 /* CanvasView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBF0E5661E6C9C120017B002 /* CanvasView.swift */; };
@@ -88,11 +89,12 @@
 		CB361E371E6C97F000BCA82C /* ValidConfigurationBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValidConfigurationBuilder.swift; sourceTree = "<group>"; };
 		CB361E381E6C97F000BCA82C /* VectorAccessConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VectorAccessConfiguration.swift; sourceTree = "<group>"; };
 		CB361E391E6C97F000BCA82C /* GeneralizedCoordinate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeneralizedCoordinate.swift; sourceTree = "<group>"; };
-		CB6CB9CA1ECE152B00D30A68 /* DerivativeBasedOptimizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DerivativeBasedOptimizer.swift; sourceTree = "<group>"; };
+		CB6CB9CA1ECE152B00D30A68 /* ForceDirectedOptimizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForceDirectedOptimizer.swift; sourceTree = "<group>"; };
 		CB6CB9CC1ECE16AB00D30A68 /* Optimizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Optimizer.swift; sourceTree = "<group>"; };
 		CBA2E9141E6F23F100A02550 /* Document+Graph.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Document+Graph.swift"; sourceTree = "<group>"; };
 		CBA2E9161E6F23F900A02550 /* Document+Configuration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Document+Configuration.swift"; sourceTree = "<group>"; };
 		CBA2E9181E6F240000A02550 /* Document+Paths.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Document+Paths.swift"; sourceTree = "<group>"; };
+		CBA9B0DA1F27659700058DAF /* DerivativeBasedOptimizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DerivativeBasedOptimizer.swift; sourceTree = "<group>"; };
 		CBEE685A1E8DC2CD0014148E /* CanvasViewUndoDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CanvasViewUndoDelegate.swift; sourceTree = "<group>"; };
 		CBF01A8F1F1280EF00FF26AF /* CircularArc+Derivatives.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CircularArc+Derivatives.swift"; sourceTree = "<group>"; };
 		CBF0E5661E6C9C120017B002 /* CanvasView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CanvasView.swift; sourceTree = "<group>"; };
@@ -203,7 +205,8 @@
 				CB361E351E6C97F000BCA82C /* Drawing.swift */,
 				CB6CB9CC1ECE16AB00D30A68 /* Optimizer.swift */,
 				CB361E361E6C97F000BCA82C /* HillClimbingOptimizer.swift */,
-				CB6CB9CA1ECE152B00D30A68 /* DerivativeBasedOptimizer.swift */,
+				CB6CB9CA1ECE152B00D30A68 /* ForceDirectedOptimizer.swift */,
+				CBA9B0DA1F27659700058DAF /* DerivativeBasedOptimizer.swift */,
 				CB361E371E6C97F000BCA82C /* ValidConfigurationBuilder.swift */,
 			);
 			path = Algorithm;
@@ -301,7 +304,8 @@
 				CB361E3B1E6C97F000BCA82C /* GreedyGraphDecomposition.swift in Sources */,
 				CB361E111E6C97D200BCA82C /* CircularArc.swift in Sources */,
 				CB361E411E6C97F000BCA82C /* GeneralizedCoordinate.swift in Sources */,
-				CB6CB9CB1ECE152B00D30A68 /* DerivativeBasedOptimizer.swift in Sources */,
+				CB6CB9CB1ECE152B00D30A68 /* ForceDirectedOptimizer.swift in Sources */,
+				CBA9B0DB1F27659700058DAF /* DerivativeBasedOptimizer.swift in Sources */,
 				CB361E3C1E6C97F000BCA82C /* MappedAccessConfiguration.swift in Sources */,
 				CB361E401E6C97F000BCA82C /* VectorAccessConfiguration.swift in Sources */,
 				CB6CB9CD1ECE16AB00D30A68 /* Optimizer.swift in Sources */,
