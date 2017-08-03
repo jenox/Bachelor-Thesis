@@ -53,8 +53,12 @@ public enum GeneralizedCoordinate {
             switch self {
             case let .x(vertex, _): self = .x(vertex, newValue)
             case let .y(vertex, _): self = .y(vertex, newValue)
-            case let .angle(path, _): self = .angle(path, .radians(newValue))
-            case let .progress(vertex, _): self = .progress(vertex, newValue)
+            case let .angle(path, _):
+                let newValue = newValue.clamped(to: (-.pi)...(+.pi))
+                self = .angle(path, .radians(newValue))
+            case let .progress(vertex, _):
+                let newValue = newValue.clamped(to: 0...1)
+                self = .progress(vertex, newValue)
             }
         }
     }
@@ -113,5 +117,11 @@ extension GeneralizedCoordinate: CustomStringConvertible {
         case let .angle(path, angle): return "angle(\(path)) = \(angle)"
         case let .progress(vertex, progress): return "progress(\(vertex)) = \(progress)"
         }
+    }
+}
+
+extension Comparable {
+    func clamped(to limits: ClosedRange<Self>) -> Self {
+        return min(max(self, limits.lowerBound), limits.upperBound)
     }
 }

@@ -35,7 +35,7 @@ public final class DerivativeBasedOptimizer: Optimizer {
         }
     }
 
-    private var temperature: CGFloat = 1.0 {
+    private var temperature: Double = 1.0 {
         didSet {
             self.undoManager.registerUndo(withTarget: self, handler: {
                 $0.temperature = oldValue
@@ -49,8 +49,8 @@ public final class DerivativeBasedOptimizer: Optimizer {
 
     public func step() {
         let paths = self.configuration.paths
-        let coordinates = VectorAccessConfiguration(for: self.configuration).coordinates
-
+        let configuration = self.configuration
+        let coordinates = VectorAccessConfiguration(for: configuration).coordinates
         let generalizedForces = self.generalizedForces
 
 //        print()
@@ -58,9 +58,9 @@ public final class DerivativeBasedOptimizer: Optimizer {
 //        print("==================")
 //        print(generalizedForces.map({ "\($0.key)  =>  \($0.value)" }).sorted().joined(separator: "\n"))
 
-        var positionalScale: CGFloat = 1
-        var angularScale: CGFloat = 1
-        var progressScale: CGFloat = 1
+        var positionalScale = 1 as CGFloat
+        var angularScale = 1 as CGFloat
+        var progressScale = 1 as CGFloat
 
         do {
             for coordinate in coordinates {
@@ -85,11 +85,11 @@ public final class DerivativeBasedOptimizer: Optimizer {
 
                     switch copy {
                     case .x, .y:
-                        copy.value += Double(scale * positionalScale * force)
+                        copy.rawValue += CGFloat(scale) * positionalScale * force
                     case .angle:
-                        copy.value += Double(scale * angularScale * force)
+                        copy.rawValue += CGFloat(scale) * angularScale * force
                     case .progress:
-                        copy.value += Double(scale * progressScale * force)
+                        copy.rawValue += CGFloat(scale) * progressScale * force
                     }
 
                     return copy
@@ -106,11 +106,9 @@ public final class DerivativeBasedOptimizer: Optimizer {
                 newDrawing = Drawing(for: newConfiguration)
             }
 
-//            print("Scaled with:", scale, positionalScale, angularScale, progressScale)
-
             self.undoManager.beginUndoGrouping()
             self.configuration = newConfiguration
-            self.temperature *= 0.9
+            self.temperature *= 0.98
             self.undoManager.endUndoGrouping()
         }
     }
@@ -127,7 +125,7 @@ public final class DerivativeBasedOptimizer: Optimizer {
 
         for (index, coordinate) in coordinates.enumerated() {
             var newCoordinates = coordinates
-            newCoordinates[index].value += Double(step)
+            newCoordinates[index].rawValue += step
 
             let newConfiguration = MappedAccessConfiguration(for: paths, coordinates: newCoordinates)
             let newEnergy = Drawing(for: newConfiguration).energy
