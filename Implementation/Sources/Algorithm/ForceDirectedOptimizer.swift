@@ -183,23 +183,10 @@ public final class ForceDirectedOptimizer: Optimizer {
     // MARK: - Stepping
 
     public func step() {
-        let configuration = self.configuration
-        let drawing = Drawing(for: configuration)
         let paths = self.configuration.paths
-
+        let configuration = self.configuration
         let coordinates = VectorAccessConfiguration(for: configuration).coordinates
-        let traditionalForces = self.traditionalForces
         let generalizedForces = self.generalizedForces
-
-//        print()
-//        print("TRADITIONAL FORCES")
-//        print("==================")
-//        print(traditionalForces.map({ "\($0.key): \($0.value)" }).sorted().joined(separator: "\n"))
-
-//        print()
-//        print("GENERALIZED FORCES")
-//        print("==================")
-//        print(generalizedForces.map({ "\($0.key)  =>  \($0.value)" }).sorted().joined(separator: "\n"))
 
         var positionalScale: CGFloat = 1
         var angularScale: CGFloat = 1
@@ -248,8 +235,6 @@ public final class ForceDirectedOptimizer: Optimizer {
                 newConfiguration = MappedAccessConfiguration(for: paths, coordinates: adjustedCoordinates())
                 newDrawing = Drawing(for: newConfiguration)
             }
-
-//            print("Scaled with:", scale, positionalScale, angularScale, progressScale)
 
             self.undoManager.beginUndoGrouping()
             self.configuration = newConfiguration
