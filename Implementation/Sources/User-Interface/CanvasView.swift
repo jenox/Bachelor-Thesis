@@ -169,7 +169,11 @@ public class CanvasView: NSView {
     // MARK: - Rendering
 
     public override func draw(_ rect: CGRect) {
-        let context = NSGraphicsContext.current!.cgContext
+        #if swift(>=4.0)
+            let context = NSGraphicsContext.current!.cgContext
+        #else
+            let context = NSGraphicsContext.current()!.cgContext
+        #endif
 
         self.drawHUD(in: context)
 
@@ -263,8 +267,14 @@ public class CanvasView: NSView {
     }
 
     private func draw(_ text: String, at position: CGPoint, in context: CGContext, alignment: NSTextAlignment) {
+        #if swift(>=4.0)
+            let fontKey = NSAttributedStringKey.font
+        #else
+            let fontKey = NSFontAttributeName
+        #endif
+
         let attributes = [
-            NSAttributedStringKey.font: NSFont(name: "Courier", size: 16)!
+            fontKey: NSFont(name: "Courier", size: 16)!
         ]
 
         let string = NSAttributedString(string: text, attributes: attributes)
@@ -501,6 +511,12 @@ public class CanvasView: NSView {
 
     private var rightMouseDown: Bool = false
 
+    private func log<K, V>(_ dictionary: [K: V], as title: String) {
+        Swift.print(title.uppercased())
+        Swift.print(repeatElement("=", count: title.characters.count).map({ String($0) }).joined())
+        Swift.print(dictionary.map({ "\($0.key): \($0.value)" }).sorted().joined(separator: "\n"))
+    }
+
     public override func rightMouseDown(with event: NSEvent) {
         guard self.drawing.energy.isFinite else {
             let error = NSError(domain: "", code: 0, userInfo: [
@@ -582,8 +598,14 @@ public class CanvasView: NSView {
         panel.nameFieldStringValue = title
         panel.allowedFileTypes = ["svg"]
 
+        #if swift(>=4.0)
+            let cancel = NSApplication.ModalResponse.cancel
+        #else
+            let cancel = NSFileHandlingPanelCancelButton
+        #endif
+
         panel.beginSheetModal(for: window, completionHandler: {
-            if let url = panel.url, $0 != NSApplication.ModalResponse.cancel {
+            if let url = panel.url, $0 != cancel {
                 let data = self.drawing.svg(for: self.effectiveTransform)
                 try! data.write(to: url)
             }

@@ -19,7 +19,12 @@ public class Document: NSDocument, CanvasViewUndoDelegate {
     public override init() {
         self.canvas = CanvasView()
 
-        self.viewController = NSViewController(nibName: nil, bundle: nil)
+        #if swift(>=4.0)
+            self.viewController = NSViewController(nibName: nil, bundle: nil)
+        #else
+            self.viewController = NSViewController(nibName: nil, bundle: nil)!
+        #endif
+
         self.viewController.view = self.canvas
 
         self.window = NSWindow(contentViewController: self.viewController)
@@ -37,9 +42,15 @@ public class Document: NSDocument, CanvasViewUndoDelegate {
 
     // MARK: - Document Behavior
 
+    #if swift(>=4.0)
     public override class var autosavesInPlace: Bool {
         return false
     }
+    #else
+    public override class func autosavesInPlace() -> Bool {
+        return false
+    }
+    #endif
 
     public override func makeWindowControllers() {
         self.addWindowController(self.windowController)
