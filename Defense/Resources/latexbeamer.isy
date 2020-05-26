@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<!DOCTYPE ipestyle SYSTEM "ipe.dtd">
+<ipestyle name="latexbeamer">
+    <preamble>
+        \usepackage[T1]{fontenc}
+        \usepackage{cmbright}
+    </preamble>
+</ipestyle>

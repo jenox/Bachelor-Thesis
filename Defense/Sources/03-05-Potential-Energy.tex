@@ -1,0 +1,70 @@
+\subsection{Potential Energy}
+\label{subsect:application-potential-energy}
+
+\begin{frame}
+  \frametitle{\insertsubsection}
+  \begin{itemize}
+    \item Vertex-Vertex repulsion \begin{itemize}
+      \item Repulsive force based on Coulomb's law
+      \item ${F_\text{rep}(d) \coloneqq c_1 \cdot \frac{1}{d^2}}$
+    \end{itemize}
+  \end{itemize}
+  \begin{equation*}
+    U_\text{rep}(u, v) \coloneqq{} \int\limits_{\infty}^{\mathclap{d(u, v)}} -F_\text{rep}(s) \differential{s}
+  \end{equation*}
+  \begin{itemize}
+    \item Vertex-Vertex attraction \begin{itemize}
+      \item Attractive force based on logarithmic spring
+      \item ${F_\text{att}(l) \coloneqq -c_2 \cdot k \cdot \eval{\ln}{\frac{l}{k}}}$
+    \end{itemize}
+  \end{itemize}
+  \begin{equation*}
+    U_\text{att}(e) \coloneqq{} \int\limits_{k}^{\mathclap{l(\Gamma_e)}} -F_\text{att}(s) \differential{s}
+  \end{equation*}
+\end{frame}
+
+\begin{frame}
+  \frametitle{\insertsubsection}
+  \begin{itemize}
+    \item Order of vertices on a path \begin{itemize}
+      \item Prevents intra-path overlapping edges
+    \end{itemize}
+  \end{itemize}
+  \begin{equation*}
+    U_\text{ord}(P) \coloneqq \begin{cases}
+      0 & \text{if edges ${e \in E(P)}$ do not overlap} \\
+      \infty & \text{otherwise}
+    \end{cases} \hspace{0.25cm}
+  \end{equation*}
+  \begin{itemize}
+    \item Vertex-Path repulsion \begin{itemize}
+      \item Prevents unwanted vertex-edge intersections
+      \item Prevents inter-path overlapping edges
+    \end{itemize}
+  \end{itemize}
+  \begin{equation*}
+    U_\text{int}(v, P) \coloneqq \begin{cases}
+      c_3 \cdot \frac{1}{d(v, \Gamma_P)} & \text{if}~d(v, \Gamma_P) \neq 0 \\
+      \infty & \text{otherwise}
+    \end{cases}
+  \end{equation*}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{\insertsubsection}
+  \begin{equation*}
+  U \coloneqq
+  \sum_{\mathclap{\substack{\lbrace u, v \rbrace \in V^2}}} U_\text{rep}(u, v)
+  +
+  \sum_{\mathclap{\substack{e \in E}}} U_\text{att}(e)
+  +
+  \sum_{\mathclap{\substack{P \in \Pi}}} U_\text{ord}(P)
+  +
+  \sum_{\mathclap{\substack{v \in V, P \in \Pi \\ v \notin V(P)}}} U_\text{int}(v, P)
+  \end{equation*}
+  \begin{itemize}
+    \item Can be evaluated in ${\bigOh{\abs{V}^2 + \abs{E} + \abs{V} \cdot \abs{\Pi}}}$
+    \item Optimization using hill climbing
+  \end{itemize}
+\end{frame}

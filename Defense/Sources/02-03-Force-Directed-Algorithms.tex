@@ -1,0 +1,26 @@
+\subsection{Force-Directed Algorithms}
+\label{subsect:force-directed-algorithms}
+
+\begin{frame}
+  \frametitle{\insertsubsection}
+  \begin{itemize}
+    \item Explicit restoring forces ${\vec{F}_i}$
+    \item Potential energy ${U}$ implicitly defined
+    \item (Infinitesimal) displacements in direction of restoring forces reduce potential energy
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{\insertsubsection}
+  \begin{itemize}
+    \item Restoring forces ${\vec{F}_i}$ act on particles
+    \item Generalized forces ${Q_j}$ \begin{itemize}
+      \item Translate restoring forces to generalized coordinates ${q_i}$
+      \begin{align}
+        Q_j \;\coloneqq &\;\; \sum_{i=1}^{n}{\vec{F}_i \cdot \frac{\partial \vec{r}_i}{\partial q_j}}, \qquad j = 1, \ldots, m\\
+        \;\stackrel{\mathclap{\eqref{eqn:force-as-differential}}}{=} &\;\; -\frac{\partial U}{\partial q_j}
+      \end{align}
+    \end{itemize}
+    \item (Infinitesimal) displacements in the direction of generalized forces reduce potential energy
+  \end{itemize}
+\end{frame}
